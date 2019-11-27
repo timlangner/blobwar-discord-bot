@@ -1,0 +1,23 @@
+{
+  "name": "fanix-discord-bot",
+  "version": "1.0.0",
+  "description": "Discord Bot for Fanix.io",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/timlangner/fanix-discord-bot.git"
+  },
+  "author": "Pake",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/timlangner/fanix-discord-bot/issues"
+  },
+  "homepage": "https://github.com/timlangner/fanix-discord-bot#readme",
+  "dependencies": {
+    "discord.js": "^11.5.1",
+    "eslint": "^6.7.1"
+  }
+}
