@@ -1,2 +1,2 @@
-fanix-discord-bot
-# fanix-discord-bot
+Fanix Discord Bot
+# Discord Bot for Fanix.io
