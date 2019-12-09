@@ -12,13 +12,15 @@ module.exports = {
             if (args.length >= 1 && args.length < 2) {
                 return message.channel.send(`You didn't provide any arguments, ${message.author}!`);
             }
+            let clanName = args.slice(1);
+            let fullClanName = clanName.join(',').replace(/,/g, ' ').split();
             //Creates a new role with the name of the second argument
             const createdRole = await message.guild.createRole({
-                name: args[1],
+                name: fullClanName.toString(),
                 permissions: ['MANAGE_MESSAGES', 'KICK_MEMBERS']
             });
-            message.member.addRole(createdRole).then(r => console.log(createdRole));
-            return message.channel.send(`You've successfully created the clan **${args[1]}**`);
+            message.member.addRole(createdRole).then(r => console.log("promise"));
+            return message.channel.send(`You've successfully created the clan **${fullClanName.toString()}**`);
         }
     },
 };
