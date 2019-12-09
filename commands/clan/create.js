@@ -41,7 +41,7 @@ module.exports = {
                     id: createdRole.id,
                     allow: ['VIEW_CHANNEL'],
                 }]).then(channel => {
-                    let category = message.guild.channels.find(c => c.name == "Clan Area" && c.type == "category");
+                    let category = message.guild.channels.find(c => c.name === "Clan Area" && c.type === "category");
 
                     if (!category) throw new Error("Category channel does not exist");
                     channel.setParent(category.id);
@@ -49,6 +49,8 @@ module.exports = {
 
                 return message.channel.send(`You've successfully created the clan **${finalClanName}**`);
             }
+        } else {
+            return message.channel.send('Unknown command! Type **!c help** to get a list of all commands.');
         }
     },
 };
