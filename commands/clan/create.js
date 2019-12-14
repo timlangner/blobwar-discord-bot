@@ -5,7 +5,7 @@ module.exports = {
     name: 'create',
     description: 'Creates a new clan!',
     guildOnly: true,
-    async execute(message, args) {
+    async execute(message, args, clan) {
         if (!args.length) {
             return message.channel.send(`Unknown command. Use ${prefix}help to get a list of all commands.`)
         } else if (args.length >= 0 && args.length < 1) {
@@ -22,6 +22,22 @@ module.exports = {
                 message.channel.send('Your clan name is too long. You can only use up to **25** characters in your name.');
             }
             else {
+                // Add Clan into the database
+                try {
+                    const clan = await clan.create({
+                        name: finalClanName,
+                        ownerUserId: message.author.id,
+                        memberCount: 1,
+                    });
+                    return message.reply(`Clan **${clan.name}** added to the database.`);
+                }
+                catch (e) {
+                    if (e.name === 'SequelizeUniqueConstraintError') {
+                        return message.reply('That clan already exists.');
+                    }
+                    return message.reply('Something went wrong with adding a clan.');
+                }
+
                 // Creates a new role with the name of the second argument
                 const createdRole = await message.guild.createRole({
                     name: finalClanName,

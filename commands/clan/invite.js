@@ -14,10 +14,8 @@ module.exports = {
         }
 
         const mentionedUser = message.mentions.users.first();
-        const ownerUserId = '185053226641522690';
         const authorUserId = message.author.id;
         const authorUsername = (await message.client.fetchUser(message.author.id)).username;
-        const ownerAvatar = (await message.client.fetchUser(ownerUserId)).avatarURL;
         const authorAvatar = (await message.client.fetchUser(authorUserId)).avatarURL;
 
         const inviteEmbed = new Discord.RichEmbed()
@@ -38,6 +36,7 @@ module.exports = {
 
         mentionedUser.send(inviteEmbed).then(embedMessage => {
             embedMessage.react('✅').then(() => embedMessage.react('❌'));
+            message.channel.send(`You've successfully invited **${mentionedUser.username}**. He received a DM where he can **accept** or **decline** your clan invitation.`);
 
             const filter = (reaction, user) => {
                 return ['✅', '❌'].includes(reaction.emoji.name) && user.id === message.author.id;
