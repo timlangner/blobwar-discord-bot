@@ -7,14 +7,13 @@ module.exports = {
     guildOnly: true,
     async execute(message, args) {
         if (!args.length) {
-            return message.channel.send(`Unknown command. Use ${prefix}c help to get a list of all commands.`)
-        } else if (args[0] === 'create') {
-            if (args.length >= 1 && args.length < 2) {
+            return message.channel.send(`Unknown command. Use ${prefix}help to get a list of all commands.`)
+        } else if (args.length >= 0 && args.length < 1) {
                 return message.channel.send(`You didn't provide any arguments, ${message.author}!`);
             }
 
             // Get the clan name as a string out of the argument-array
-            let clanName = args.slice(1);
+            let clanName = args;
             let fullClanName = clanName.join(',').replace(/,/g, ' ').split();
             const finalClanName = fullClanName.toString();
 
@@ -49,8 +48,5 @@ module.exports = {
 
                 return message.channel.send(`You've successfully created the clan **${finalClanName}**`);
             }
-        } else {
-            return message.channel.send('Unknown command! Type **!c help** to get a list of all commands.');
-        }
-    },
+    }
 };
