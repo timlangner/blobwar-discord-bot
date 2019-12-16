@@ -13,7 +13,8 @@ module.exports = {
 
         const authorUserId = message.author.id;
         const mentionedUser = message.mentions.members.first();
-        const ownedClan = await clan.findAll({ where: { ownerUserId: authorUserId } });
+        const ownedClanData = await clan.findOne({ where: { ownerUserId: authorUserId }, attributes: ['ownerUserId']});
+        const ownedClanOwnerId = JSON.parse(JSON.stringify(ownedClanData)).ownerUserId;
         const memberClan = await member.findAll({ where: { memberUserId: authorUserId } });
         const authorUsername = (await message.client.fetchUser(message.author.id)).username;
         const authorAvatar = (await message.client.fetchUser(authorUserId)).avatarURL;
@@ -22,8 +23,10 @@ module.exports = {
         const clanRoleIdData = await clan.findOne({ where: {ownerUserId: authorUserId }, attributes: ['roleId']});
         const clanRoleId = JSON.parse(JSON.stringify(clanRoleIdData)).roleId;
 
+        // TODO: Check if invited User got already invited or is already in a clan
+
         // Check if user is already in a clan
-        if (ownedClan.length < 1) {
+        if (ownedClanData.length < 1) {
             isOwnerOfClan = false;
         }
         if (memberClan.length < 1) {
@@ -36,6 +39,8 @@ module.exports = {
             return message.channel.send(`You didn't provide any arguments, ${message.author}!`);
         } else if (!isOwnerOfClan) {
             return message.channel.send(`You're not an owner of a clan. **Create** an own clan first and then try it again.`);
+        } else if (isOwnerOfClan && mentionedUser.id === ownedClanOwnerId) {
+            return message.channel.send(`You're the owner of the clan. You can't invite yourself ;)`);
         } else if (isOwnerOfClan) {
             const inviteEmbed = new Discord.RichEmbed()
                 .setColor('#0000ff')
