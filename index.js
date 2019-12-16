@@ -11,13 +11,20 @@ client.commands = new Discord.Collection();
 const sequelize = new Sequelize('database', 'user', 'password', {
     host: 'localhost',
     dialect: 'sqlite',
-    logging: true,
+    logging: false,
     // SQLite only
     storage: 'database.sqlite',
 });
 
 // Create "Clan" table
 const clan = sequelize.define('clan', {
+    clanId: {
+        primaryKey: true,
+        autoIncrement: true,
+        type: Sequelize.INTEGER,
+        unique: true,
+        allowNull: false,
+    },
     name: {
         type: Sequelize.STRING,
         unique: true,
@@ -37,6 +44,35 @@ const clan = sequelize.define('clan', {
     },
 });
 
+// Create "Member" table
+const member = sequelize.define('member', {
+    userId: {
+        primaryKey: true,
+        autoIncrement: true,
+        type: Sequelize.INTEGER,
+        unique: true,
+        allowNull: false,
+    },
+    username: {
+        type: Sequelize.STRING,
+        unique: true,
+        defaultValue: "",
+        allowNull: false,
+    },
+    memberUserId: {
+        type: Sequelize.INTEGER,
+        unique: true,
+        defaultValue: 0,
+        allowNull: false,
+    },
+    clanName: {
+        type: Sequelize.STRING,
+        unique: false,
+        allowNull: true,
+        foreignKey: clan.name,
+    },
+});
+
 // Find all commands
 const commandFiles = fs.readdirSync('./commands/clan').filter(file => file.endsWith('.js'));
 
@@ -50,14 +86,15 @@ for (const file of commandFiles) {
 
 // when the client is ready, run this code
 // this event will only trigger one time after logging in
-client.once('ready', () => {
+client.once('ready', async () => {
     console.log('Ready!');
 
     // set playing status
-    client.user.setActivity('Fanix.io');
+    await client.user.setActivity('Fanix.io');
 
-    // sync the clan table
+    // sync the tables
     clan.sync();
+    member.sync();
 });
 
 client.on('message', message => {
@@ -70,7 +107,7 @@ client.on('message', message => {
         return message.channel.send(`Unknown command. Use ${prefix}help to get a list of all commands.`);
     } else {
         try {
-            client.commands.get(command).execute(message, args, clan);
+            client.commands.get(command).execute(message, args, clan, member);
         } catch (error) {
             console.error(error);
             message.reply('there was an error trying to execute that command!');
