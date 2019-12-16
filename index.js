@@ -32,7 +32,13 @@ const clan = sequelize.define('clan', {
         allowNull: false,
     },
     ownerUserId: {
-        type: Sequelize.INTEGER,
+        type: Sequelize.STRING,
+        unique: true,
+        defaultValue: 0,
+        allowNull: false,
+    },
+    roleId: {
+        type: Sequelize.STRING,
         unique: true,
         defaultValue: 0,
         allowNull: false,
@@ -46,7 +52,7 @@ const clan = sequelize.define('clan', {
 
 // Create "Member" table
 const member = sequelize.define('member', {
-    userId: {
+    memberId: {
         primaryKey: true,
         autoIncrement: true,
         type: Sequelize.INTEGER,
@@ -60,7 +66,7 @@ const member = sequelize.define('member', {
         allowNull: false,
     },
     memberUserId: {
-        type: Sequelize.INTEGER,
+        type: Sequelize.STRING,
         unique: true,
         defaultValue: 0,
         allowNull: false,

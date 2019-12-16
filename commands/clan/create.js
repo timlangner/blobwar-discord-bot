@@ -41,17 +41,17 @@ module.exports = {
         else {
             // Add Clan into the database
             try {
-                const createClan = await clan.create({
-                    name: finalClanName,
-                    ownerUserId: message.author.id,
-                    memberCount: 1,
-                });
-                // Creates a new role with the name of the second argument
                 const createdRole = await message.guild.createRole({
                     name: finalClanName,
                     permissions: ['MANAGE_MESSAGES', 'KICK_MEMBERS']
                 });
-                message.member.addRole(createdRole).then(r => console.log("promise"));
+                await clan.create({
+                    name: finalClanName,
+                    ownerUserId: message.author.id,
+                    roleId: createdRole.id,
+                    memberCount: 1,
+                });
+                await message.member.addRole(createdRole);
 
                 // Creates Clan Channel in Category
                 message.guild.createChannel(finalClanName, 'text', [{
