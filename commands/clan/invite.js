@@ -17,9 +17,8 @@ module.exports = {
         const memberClan = await member.findAll({ where: { memberUserId: authorUserId } });
         const authorUsername = (await message.client.fetchUser(message.author.id)).username;
         const authorAvatar = (await message.client.fetchUser(authorUserId)).avatarURL;
-        const ownedClanName = await clan.findAll({ where: {ownerUserId: authorUserId }, attributes: ['name']});
-
-        console.log('OWNEDCLAN', ownedClanName);
+        const ownedClanNameData = await clan.findOne({ where: {ownerUserId: authorUserId }, attributes: ['name']});
+        const ownedClanName = JSON.parse(JSON.stringify(ownedClanNameData));
 
         // Check if user is already in a clan
         if (ownedClan.length < 1) {
@@ -33,13 +32,13 @@ module.exports = {
             return message.channel.send(`Unknown command. Use ${prefix}help to get a list of all commands.`)
         } else if (args.length >= 0 && args.length < 0) {
             return message.channel.send(`You didn't provide any arguments, ${message.author}!`);
-        } else if (isMemberOfClan) {
+        } else if (!isOwnerOfClan) {
             return message.channel.send(`You're not an owner of a clan. **Create** a own clan first and then try it again.`);
         } else if (isOwnerOfClan) {
             const inviteEmbed = new Discord.RichEmbed()
                 .setColor('#0000ff')
                 .setTitle('You got invited!')
-                .setDescription(`${authorUsername} invited you to join the Clan **CouchPotato**! React to accept or decline.`)
+                .setDescription(`${authorUsername} invited you to join the Clan **${ownedClanName.name}**! React to accept or decline.`)
                 .setThumbnail(authorAvatar);
 
             const acceptEmbed = new Discord.RichEmbed()
@@ -57,7 +56,7 @@ module.exports = {
                 message.channel.send(`You've successfully invited **${mentionedUser.username}**. He received a DM where he can **accept** or **decline** your clan invitation.`);
 
                 const filter = (reaction, user) => {
-                    return ['✅', '❌'].includes(reaction.emoji.name) && user.id === message.author.id;
+                    return ['✅', '❌'].includes(reaction.emoji.name) && user.id === mentionedUser.id ;
                 };
 
                 embedMessage.awaitReactions(filter, { max: 1 })
