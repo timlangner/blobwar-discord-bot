@@ -14,7 +14,10 @@ module.exports = {
         const authorUsername = (await message.client.fetchUser(message.author.id)).username;
         const authorAvatar = (await message.client.fetchUser(authorUserId)).avatarURL;
         const mentionedUser = message.mentions.members.first();
-        const memberClan = await member.findAll({where: {memberUserId: authorUserId}});
+        const memberClanData = await member.findOne({where: {memberUserId: authorUserId}});
+        const memberClan = JSON.parse(JSON.stringify(memberClanData));
+        let allMemberClanData;
+        let allMemberClan;
         const ownedClanData = await clan.findOne({where: {ownerUserId: authorUserId}, attributes: ['ownerUserId']});
         const ownedClanOwnerId = JSON.parse(JSON.stringify(ownedClanData)).ownerUserId;
         const ownedClanNameData = await clan.findOne({where: {ownerUserId: authorUserId}, attributes: ['name']});
@@ -67,19 +70,26 @@ module.exports = {
 
                 embedMessage.awaitReactions(filter, {max: 1})
                     .then(async collected => {
-                        const reaction = collected.first();
+                        allMemberClanData = await member.findAll({where: {clanName: memberClan.clanName}});
+                        allMemberClan = JSON.parse(JSON.stringify(allMemberClanData));
 
-                        if (reaction.emoji.name === '✅') {
-                            console.log('BEFORE', clanRoleId);
-                            await mentionedUser.addRole(clanRoleId);
-                            await member.create({
-                                username: mentionedUser.displayName,
-                                memberUserId: mentionedUser.id,
-                                clanName: ownedClanName.name,
-                            });
-                            await mentionedUser.send(acceptEmbed);
+                        if (!allMemberClan.find(member => member.memberUserId === mentionedUser.id)) {
+                            const reaction = collected.first();
+
+                            if (reaction.emoji.name === '✅') {
+                                console.log('BEFORE', clanRoleId);
+                                await mentionedUser.addRole(clanRoleId);
+                                await member.create({
+                                    username: mentionedUser.displayName,
+                                    memberUserId: mentionedUser.id,
+                                    clanName: ownedClanName.name,
+                                });
+                                await mentionedUser.send(acceptEmbed);
+                            } else {
+                                await mentionedUser.send(declineEmbed);
+                            }
                         } else {
-                            await mentionedUser.send(declineEmbed);
+                            return mentionedUser.send('Du bist bereits in einem Clan');
                         }
                     })
             });
