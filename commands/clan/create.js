@@ -41,7 +41,6 @@ module.exports = {
             try {
                 const createdRole = await message.guild.createRole({
                     name: finalClanName,
-                    permissions: ['MANAGE_MESSAGES', 'KICK_MEMBERS']
                 });
                 await clan.create({
                     name: finalClanName,
