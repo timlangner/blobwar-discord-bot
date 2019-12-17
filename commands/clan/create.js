@@ -49,6 +49,11 @@ module.exports = {
                     roleId: createdRole.id,
                     memberCount: 1,
                 });
+                await member.create({
+                    username: message.author.username,
+                    memberUserId: message.author.id,
+                    clanName: finalClanName,
+                });
                 await message.member.addRole(createdRole);
 
                 // Creates Clan Channel in Category

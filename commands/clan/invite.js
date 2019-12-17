@@ -72,6 +72,11 @@ module.exports = {
                         if (reaction.emoji.name === '✅') {
                             console.log('BEFORE', clanRoleId);
                             await mentionedUser.addRole(clanRoleId);
+                            await member.create({
+                                username: mentionedUser.displayName,
+                                memberUserId: mentionedUser.id,
+                                clanName: ownedClanName.name,
+                            });
                             await mentionedUser.send(acceptEmbed);
                         } else {
                             await mentionedUser.send(declineEmbed);
