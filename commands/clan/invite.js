@@ -25,8 +25,6 @@ module.exports = {
         const clanRoleIdData = await clan.findOne({where: {ownerUserId: authorUserId}, attributes: ['roleId']});
         const clanRoleId = JSON.parse(JSON.stringify(clanRoleIdData)).roleId;
 
-        // TODO: Check if invited User got already invited or is already in a clan
-
         // Check if user is already in a clan
         if (ownedClanData.length < 1) {
             isOwnerOfClan = false;
