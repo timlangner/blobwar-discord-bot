@@ -109,6 +109,8 @@ client.on('message', message => {
     const args = message.content.slice(prefix.length).split(/ +/);
     const command = args.shift().toLowerCase();
 
+    console.log('COMMAND', command);
+
     if (!client.commands.has(command)) {
         return message.channel.send(`Unknown command. Use ${prefix}help to get a list of all commands.`);
     } else {

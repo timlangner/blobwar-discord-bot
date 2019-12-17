@@ -1,4 +1,3 @@
-
 const Discord = require('discord.js');
 const {prefix} = require('../../config');
 
@@ -12,15 +11,15 @@ module.exports = {
 
 
         const authorUserId = message.author.id;
-        const mentionedUser = message.mentions.members.first();
-        const ownedClanData = await clan.findOne({ where: { ownerUserId: authorUserId }, attributes: ['ownerUserId']});
-        const ownedClanOwnerId = JSON.parse(JSON.stringify(ownedClanData)).ownerUserId;
-        const memberClan = await member.findAll({ where: { memberUserId: authorUserId } });
         const authorUsername = (await message.client.fetchUser(message.author.id)).username;
         const authorAvatar = (await message.client.fetchUser(authorUserId)).avatarURL;
-        const ownedClanNameData = await clan.findOne({ where: {ownerUserId: authorUserId }, attributes: ['name']});
+        const mentionedUser = message.mentions.members.first();
+        const memberClan = await member.findAll({where: {memberUserId: authorUserId}});
+        const ownedClanData = await clan.findOne({where: {ownerUserId: authorUserId}, attributes: ['ownerUserId']});
+        const ownedClanOwnerId = JSON.parse(JSON.stringify(ownedClanData)).ownerUserId;
+        const ownedClanNameData = await clan.findOne({where: {ownerUserId: authorUserId}, attributes: ['name']});
         const ownedClanName = JSON.parse(JSON.stringify(ownedClanNameData));
-        const clanRoleIdData = await clan.findOne({ where: {ownerUserId: authorUserId }, attributes: ['roleId']});
+        const clanRoleIdData = await clan.findOne({where: {ownerUserId: authorUserId}, attributes: ['roleId']});
         const clanRoleId = JSON.parse(JSON.stringify(clanRoleIdData)).roleId;
 
         // TODO: Check if invited User got already invited or is already in a clan
@@ -63,10 +62,10 @@ module.exports = {
                 message.channel.send(`You've successfully invited **${mentionedUser.displayName}**. He received a DM where he can **accept** or **decline** your clan invitation.`);
 
                 const filter = (reaction, user) => {
-                    return ['✅', '❌'].includes(reaction.emoji.name) && user.id === mentionedUser.id ;
+                    return ['✅', '❌'].includes(reaction.emoji.name) && user.id === mentionedUser.id;
                 };
 
-                embedMessage.awaitReactions(filter, { max: 1 })
+                embedMessage.awaitReactions(filter, {max: 1})
                     .then(async collected => {
                         const reaction = collected.first();
 
