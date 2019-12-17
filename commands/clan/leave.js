@@ -29,11 +29,11 @@ module.exports = {
             await message.guild.channels.find(channel => channel.name === ownedClan.name).delete();
             await clan.destroy({ where: { ownerUserId: ownedClan.ownerUserId } });
             await member.destroy({ where: { clanName: memberClan.clanName } });
-            return message.channel.send(`Are you sure you want to leave your own clan **${memberClan.clanName}**?`);
+            return message.channel.send(`You successfully disbanded your own clan **${memberClan.clanName}**.`);
         } else { // Member
             await message.member.removeRole(ownedClan.roleId);
             member.destroy({ where: { memberUserId: message.author.id } });
-            return message.channel.send(`Are you sure you want to leave the clan **${memberClan.clanName}**?`);
+            return message.channel.send(`You successfully left the clan **${memberClan.clanName}**.`);
         }
     }
 };
