@@ -1,6 +1,3 @@
-
-const {prefix} = require('../../config');
-
 module.exports = {
     name: 'leave',
     description: 'Leaves your current clan',

@@ -31,7 +31,7 @@ module.exports = {
         // Get the clan name as a string out of the argument-array
         let clanName = args;
         let fullClanName = clanName.join(',').replace(/,/g, ' ').split();
-        const finalClanName = fullClanName.toString();
+        const finalClanName = fullClanName.toString().toLowerCase();
 
         // Check if clan name is longer than 25 characters
         if (finalClanName.length > 25) {

@@ -8,7 +8,8 @@ module.exports = {
     async execute(message, args, clan, member) {
         let isOwnerOfClan = true;
         let isMemberOfClan = true;
-
+        let allMemberClanData;
+        let allMemberClan;
 
         const authorUserId = message.author.id;
         const authorUsername = (await message.client.fetchUser(message.author.id)).username;
@@ -16,8 +17,6 @@ module.exports = {
         const mentionedUser = message.mentions.members.first();
         const memberClanData = await member.findOne({where: {memberUserId: authorUserId}});
         const memberClan = JSON.parse(JSON.stringify(memberClanData));
-        let allMemberClanData;
-        let allMemberClan;
         const ownedClanData = await clan.findOne({where: {ownerUserId: authorUserId}, attributes: ['ownerUserId']});
         const ownedClanOwnerId = JSON.parse(JSON.stringify(ownedClanData)).ownerUserId;
         const ownedClanNameData = await clan.findOne({where: {ownerUserId: authorUserId}, attributes: ['name']});
