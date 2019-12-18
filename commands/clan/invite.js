@@ -24,6 +24,8 @@ module.exports = {
         const ownedClanName = JSON.parse(JSON.stringify(ownedClanNameData));
         const clanRoleIdData = await clan.findOne({where: {ownerUserId: authorUserId}, attributes: ['roleId']});
         const clanRoleId = JSON.parse(JSON.stringify(clanRoleIdData)).roleId;
+        const currentMemberCountData = await clan.findOne({where: {ownerUserId: authorUserId}, attributes: ['memberCount']});
+        const currentMemberCount = JSON.parse(JSON.stringify(currentMemberCountData)).memberCount;
 
         // Check if user is already in a clan
         if (ownedClanData.length < 1) {
@@ -82,12 +84,19 @@ module.exports = {
                                     memberUserId: mentionedUser.id,
                                     clanName: ownedClanName.name,
                                 });
+                                await clan.update(
+                                {
+                                    memberCount: currentMemberCount + 1
+                                },
+                                {
+                                    where: {name: ownedClanName.name}
+                                });
                                 await mentionedUser.send(acceptEmbed);
                             } else {
                                 await mentionedUser.send(declineEmbed);
                             }
                         } else {
-                            return mentionedUser.send('Du bist bereits in einem Clan');
+                            return mentionedUser.send(`You're already in a clan.`);
                         }
                     })
             });
