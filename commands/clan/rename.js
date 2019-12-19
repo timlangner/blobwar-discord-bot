@@ -50,9 +50,9 @@ module.exports = {
             await message.guild.roles.find(role => role.id === ownedClan.roleId).edit(
             { name: newFinalClanName,}
             );
-            return message.channel.send("rename");
+            return message.channel.send(`You've successfully renamed your clan **${oldClanName}** to **${newFinalClanName}**`);
         } else {
-            return message.channel.send("no permission");
+            return message.channel.send(`You have no permissions to rename the clan **${oldClanName}**`);
         }
 
     }

@@ -14,14 +14,14 @@ module.exports = {
         const ownedClan = JSON.parse(JSON.stringify(ownedClanData));
 
         if (mentionedUser.id === authorUserId) {
-            return message.channel.send("can't kick yourself");
+            return message.channel.send("You cant kick yourself. Use ``!c leave`` to disband your clan.");
         } else if (authorUserId === ownedClan.ownerUserId && allMemberClans.find(member => member.memberUserId === mentionedUser.id)) {
             await member.destroy({ where: { memberUserId: mentionedUser.id}});
-            return message.channel.send('kicked');
+            return message.channel.send(`You've successfully kicked **${mentionedUser.username}** from your clan **${ownedClan.name}**!`);
         } else if (authorUserId === ownedClan.ownerUserId) {
-            return message.channel.send('No Member');
+            return message.channel.send('Your clan has no members. Go and invite some people.');
         } else if (allMemberClans.find(member => member.memberUserId === mentionedUser.id)) {
-            return message.channel.send('No Admin');
+            return message.channel.send(`You have no permissions to kick someone from the clan **${ownedClan.name}**.`);
         } else {
 
         }
