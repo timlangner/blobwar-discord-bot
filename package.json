@@ -18,6 +18,8 @@
   "homepage": "https://github.com/timlangner/fanix-discord-bot#readme",
   "dependencies": {
     "discord.js": "^11.5.1",
-    "eslint": "^6.7.1"
+    "eslint": "^6.7.1",
+    "sequelize": "^5.21.3",
+    "sqlite3": "^4.1.1"
   }
 }
