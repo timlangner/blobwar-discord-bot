@@ -76,10 +76,12 @@ module.exports = {
                             const reaction = collected.first();
 
                             if (reaction.emoji.name === '✅') {
-                                console.log('BEFORE', clanRoleId);
+                                const user = await message.client.fetchUser(mentionedUser.id);
+                                console.log('USEROBJECT', user);
+                                console.log('USERNAME', user.username);
                                 await mentionedUser.addRole(clanRoleId);
                                 await member.create({
-                                    username: mentionedUser.displayName,
+                                    username: user.username,
                                     memberUserId: mentionedUser.id,
                                     clanName: ownedClanName.name,
                                 });

@@ -21,8 +21,6 @@ module.exports = {
         }
 
         if (!args.length) {
-            return message.channel.send(`Unknown command. Use ${prefix}help to get a list of all commands.`)
-        } else if (args.length >= 0 && args.length < 1) {
             return message.channel.send(`You didn't provide any arguments, ${message.author}!`);
         } else if (isOwnerOfClan || isMemberOfClan) {
             return message.channel.send(`You're already in a clan. **Leave** it first and then try it again.`);

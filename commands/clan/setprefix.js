@@ -1,3 +1,5 @@
+const {prefix} = require('../../config');
+
 module.exports = {
     name: 'setprefix',
     description: 'Sets a prefix for your clan.',
@@ -14,8 +16,6 @@ module.exports = {
         const ownedClan = JSON.parse(JSON.stringify(ownedClanData));
 
         if (!args.length) {
-            return message.channel.send(`Unknown command. Use ${prefix}help to get a list of all commands.`)
-        } else if (args.length >= 0 && args.length < 1) {
             return message.channel.send(`You didn't provide any arguments, ${message.author}!`);
         }
 
