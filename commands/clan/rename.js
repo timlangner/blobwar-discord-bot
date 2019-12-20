@@ -26,7 +26,7 @@ module.exports = {
             message.channel.send('Your new clan name is too long. You can only use up to **25** characters in your name.');
         }
 
-        const oldClanName = ownedClan.name.toLowerCase();
+        const oldClanName = ownedClan.name;
 
         if (ownedClan.ownerUserId === authorUserId) {
             await member.update(

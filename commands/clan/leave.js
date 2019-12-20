@@ -11,9 +11,6 @@ module.exports = {
         const ownedClanData = await clan.findOne({where: {name: memberClan.clanName}});
         const ownedClan = JSON.parse(JSON.stringify(ownedClanData));
 
-        // const clanRoleIdData = await clan.findOne({where: {ownerUserId: authorUserId}, attributes: ['roleId']});
-        // const clanRoleId = JSON.parse(JSON.stringify(clanRoleIdData)).roleId;
-
         // Check if user is in a clan
         if (ownedClan !== null && ownedClan.ownerUserId === message.author.id) {
             isOwnerOfClan = true;

@@ -48,6 +48,10 @@ const clan = sequelize.define('clan', {
         defaultValue: 0,
         allowNull: false,
     },
+    prefix: {
+        type: Sequelize.STRING,
+        allowNull: true,
+    },
 });
 
 // Create "Member" table
