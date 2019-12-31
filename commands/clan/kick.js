@@ -12,10 +12,12 @@ module.exports = {
         const allMemberClans = JSON.parse(JSON.stringify(allMemberClanData));
         const ownedClanData = await clan.findOne({where: {name: allMemberClans[0].clanName}});
         const ownedClan = JSON.parse(JSON.stringify(ownedClanData));
+        const clanRoleId = JSON.parse(JSON.stringify(clanRoleIdData)).roleId;
 
         if (mentionedUser.id === authorUserId) {
             return message.channel.send("You cant kick yourself. Use ``!c leave`` to disband your clan.");
         } else if (authorUserId === ownedClan.ownerUserId && allMemberClans.find(member => member.memberUserId === mentionedUser.id)) {
+            await mentionedUser.removeRole(clanRoleId);
             await member.destroy({ where: { memberUserId: mentionedUser.id}});
             return message.channel.send(`You've successfully kicked <@${mentionedUser.user.id}> from your clan **${ownedClan.name}**!`);
         } else if (authorUserId === ownedClan.ownerUserId) {
