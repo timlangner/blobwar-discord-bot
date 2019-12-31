@@ -61,7 +61,7 @@ module.exports = {
 
             mentionedUser.send(inviteEmbed).then(embedMessage => {
                 embedMessage.react('✅').then(() => embedMessage.react('❌'));
-                message.channel.send(`You've successfully invited **${mentionedUser.displayName}**. He received a DM where he can **accept** or **decline** your clan invitation.`);
+                message.channel.send(`You've successfully invited <@${mentionedUser.id}>. He received a DM where he can **accept** or **decline** your clan invitation.`);
 
                 const filter = (reaction, user) => {
                     return ['✅', '❌'].includes(reaction.emoji.name) && user.id === mentionedUser.id;
