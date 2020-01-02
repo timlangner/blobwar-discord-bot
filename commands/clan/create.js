@@ -1,5 +1,6 @@
 const {prefix} = require('../../config');
 
+// TODO: Add GuildId to db
 module.exports = {
     name: 'create',
     description: 'Creates a new clan!',
