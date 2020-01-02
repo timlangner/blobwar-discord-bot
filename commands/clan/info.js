@@ -45,8 +45,9 @@ module.exports = {
                 .setTitle(`${finalClanName}`)
                 .setURL('https://fanix.io/')
                 .setDescription(`Here's some information about the clan **${fullClanName}**!`)
+                .setThumbnail('https://i.imgur.com/davX7Gc.png')
                 .addField('Owner', `${clanOwner}`)
-                .addField('Members:', `${members.map(m => m.toString())}`)
+                .addField('Members:', `${members.length > 0 ? members.map(m => m.toString()) : 'No Members'}`)
                 .setFooter(`Creation date: ${date.toUTCString()}`);
                 return message.channel.send(infoEmbed);
 
