@@ -1,8 +1,8 @@
 const {prefix} = require('../../config');
 
 module.exports = {
-    name: 'setprefix',
-    description: 'Sets a prefix for your clan.',
+    name: 'removeprefix',
+    description: 'Removes the prefix for your clan.',
     guildOnly: true,
     async execute(message, args, clan, member) {
         let isOwnerOfClan = false;
@@ -15,37 +15,35 @@ module.exports = {
         const ownedClanData = await clan.findOne({where: {name: memberClan.clanName}});
         const ownedClan = JSON.parse(JSON.stringify(ownedClanData));
 
-        if (!args.length) {
-            return message.channel.send(`You didn't provide any arguments, ${message.author}!`);
-        }
-
         // Check if user is in a clan
         if (ownedClan !== null && ownedClan.ownerUserId === message.author.id) {
             isOwnerOfClan = true;
         }
 
-        console.log(message.guild.members.find(member => member.user.username === allMemberClan[0].username));
-
         if (ownedClan === null) { // No Clan
             return message.channel.send(`You're not in a clan. **Create** or join a clan first.`);
         } else if (isOwnerOfClan) { // Owner
-            await clan.update(
-                {
-                    prefix: args[0]
-                },
-                {
-                    where: {name: ownedClan.name}
+            if (ownedClan.prefix === null) {
+                return message.channel.send(`Your Clan has no prefix.`);
+            } else {
+                await clan.update(
+                    {
+                        prefix: null
+                    },
+                    {
+                        where: {name: ownedClan.name}
+                    }
+                );
+                for (let i=0; i < allMemberClan.length; i++) {
+                    await  message.guild.members.find(member => member.user.username === allMemberClan[i].username).setNickname(`${allMemberClan[i].username}`);
                 }
-            );
-            for (let i=0; i < allMemberClan.length; i++) {
-                await  message.guild.members.find(member => member.user.username === allMemberClan[i].username).setNickname(`[${args[0]}] ${allMemberClan[i].username}`);
-            }
 
-            return message.channel.send(`You successfully set a prefix for your clan **${memberClan.clanName}**.`);
+                return message.channel.send(`You successfully removed the prefix for your clan **${memberClan.clanName}**.`);
+            }
         } else { // Member
             await message.member.removeRole(ownedClan.roleId);
             member.destroy({ where: { memberUserId: message.author.id } });
-            return message.channel.send(`You've no permissions to set a prefix for the clan **${memberClan.clanName}**.`);
+            return message.channel.send(`You've no permissions to remove the prefix for the clan **${memberClan.clanName}**.`);
         }
     }
 };
