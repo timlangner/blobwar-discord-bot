@@ -17,7 +17,7 @@ module.exports = {
         const mentionedUser = message.mentions.members.first();
         const memberClanData = await member.findOne({where: {memberUserId: authorUserId}});
         const memberClan = JSON.parse(JSON.stringify(memberClanData));
-        const ownedClanData = await clan.findOne({where: {ownerUserId: authorUserId}, attributes: ['ownerUserId']});
+        const ownedClanData = await clan.findOne({where: {ownerUserId: authorUserId}, attributes: ['ownerUserId']}).catch(message.channel.send(`You don't have permission to invite a user to your clan.`));
         const ownedClanOwnerId = JSON.parse(JSON.stringify(ownedClanData)).ownerUserId;
         const ownedClanNameData = await clan.findOne({where: {ownerUserId: authorUserId}, attributes: ['name']});
         const ownedClanName = JSON.parse(JSON.stringify(ownedClanNameData));
@@ -59,48 +59,52 @@ module.exports = {
                 .setTitle('SUCCESS')
                 .setDescription(`You've successfully declined the invitation and will not receive access to the clan area.`);
 
-            mentionedUser.send(inviteEmbed).then(embedMessage => {
-                embedMessage.react('✅').then(() => embedMessage.react('❌'));
-                message.channel.send(`You've successfully invited <@${mentionedUser.id}>. He received a DM where he can **accept** or **decline** your clan invitation.`);
+            if (mentionedUser.user.id === memberClan.memberUserId) {
+                message.channel.send(`You can't invite a user that is already in your clan.`);
+            } else {
+                mentionedUser.send(inviteEmbed).then(embedMessage => {
+                    embedMessage.react('✅').then(() => embedMessage.react('❌'));
+                    message.channel.send(`You've successfully invited <@${mentionedUser.id}>. He received a DM where he can **accept** or **decline** your clan invitation.`);
 
-                const filter = (reaction, user) => {
-                    return ['✅', '❌'].includes(reaction.emoji.name) && user.id === mentionedUser.id;
-                };
+                    const filter = (reaction, user) => {
+                        return ['✅', '❌'].includes(reaction.emoji.name) && user.id === mentionedUser.id;
+                    };
 
-                embedMessage.awaitReactions(filter, {max: 1})
-                    .then(async collected => {
-                        allMemberClanData = await member.findAll({where: {clanName: memberClan.clanName}});
-                        allMemberClan = JSON.parse(JSON.stringify(allMemberClanData));
+                    embedMessage.awaitReactions(filter, {max: 1})
+                        .then(async collected => {
+                            allMemberClanData = await member.findAll({where: {clanName: memberClan.clanName}});
+                            allMemberClan = JSON.parse(JSON.stringify(allMemberClanData));
 
-                        if (!allMemberClan.find(member => member.memberUserId === mentionedUser.id)) {
-                            const reaction = collected.first();
+                            if (!allMemberClan.find(member => member.memberUserId === mentionedUser.id)) {
+                                const reaction = collected.first();
 
-                            if (reaction.emoji.name === '✅') {
-                                const user = await message.client.fetchUser(mentionedUser.id);
-                                console.log('USEROBJECT', user);
-                                console.log('USERNAME', user.username);
-                                await mentionedUser.addRole(clanRoleId);
-                                await member.create({
-                                    username: user.username,
-                                    memberUserId: mentionedUser.id,
-                                    clanName: ownedClanName.name,
-                                });
-                                await clan.update(
-                                {
-                                    memberCount: currentMemberCount + 1
-                                },
-                                {
-                                    where: {name: ownedClanName.name}
-                                });
-                                await mentionedUser.send(acceptEmbed);
+                                if (reaction.emoji.name === '✅') {
+                                    const user = await message.client.fetchUser(mentionedUser.id);
+                                    console.log('USEROBJECT', user);
+                                    console.log('USERNAME', user.username);
+                                    await mentionedUser.addRole(clanRoleId);
+                                    await member.create({
+                                        username: user.username,
+                                        memberUserId: mentionedUser.id,
+                                        clanName: ownedClanName.name,
+                                    });
+                                    await clan.update(
+                                        {
+                                            memberCount: currentMemberCount + 1
+                                        },
+                                        {
+                                            where: {name: ownedClanName.name}
+                                        });
+                                    await mentionedUser.send(acceptEmbed);
+                                } else {
+                                    await mentionedUser.send(declineEmbed);
+                                }
                             } else {
-                                await mentionedUser.send(declineEmbed);
+                                return mentionedUser.send(`You're already in a clan.`);
                             }
-                        } else {
-                            return mentionedUser.send(`You're already in a clan.`);
-                        }
-                    })
-            });
+                        })
+                });
+            }
         }
     }
 };

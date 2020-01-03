@@ -40,6 +40,7 @@ module.exports = {
             // Format CreationDate
             const date = new Date(clanInfo.createdAt);
 
+            // TODO: Show member count
             const infoEmbed = new Discord.RichEmbed()
                 .setColor('#0099ff')
                 .setTitle(`${finalClanName}`)

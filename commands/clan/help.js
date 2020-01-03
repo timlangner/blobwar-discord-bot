@@ -4,7 +4,7 @@ module.exports = {
     name: 'help',
     description: 'Displays all available commands,',
     guildOnly: true,
-    async execute(message, args, clan, member) {
+    async execute(message) {
 
         const ownerAvatar = (await message.client.fetchUser('185053226641522690')).avatarURL;
         const mainCommands = [`!c create <name> - Create a clan`, `!c leave - Leave your current clan`];
