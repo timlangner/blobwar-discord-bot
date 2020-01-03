@@ -17,7 +17,7 @@ module.exports = {
         const mentionedUser = message.mentions.members.first();
         const memberClanData = await member.findOne({where: {memberUserId: authorUserId}});
         const memberClan = JSON.parse(JSON.stringify(memberClanData));
-        const ownedClanData = await clan.findOne({where: {ownerUserId: authorUserId}, attributes: ['ownerUserId']}).catch(message.channel.send(`You don't have permission to invite a user to your clan.`));
+        const ownedClanData = await clan.findOne({where: {ownerUserId: authorUserId}, attributes: ['ownerUserId']});
         const ownedClanOwnerId = JSON.parse(JSON.stringify(ownedClanData)).ownerUserId;
         const ownedClanNameData = await clan.findOne({where: {ownerUserId: authorUserId}, attributes: ['name']});
         const ownedClanName = JSON.parse(JSON.stringify(ownedClanNameData));
@@ -59,7 +59,7 @@ module.exports = {
                 .setTitle('SUCCESS')
                 .setDescription(`You've successfully declined the invitation and will not receive access to the clan area.`);
 
-            if (mentionedUser.user.id === memberClan.memberUserId) {
+            if (mentionedUser.id === memberClan.memberUserId) {
                 message.channel.send(`You can't invite a user that is already in your clan.`);
             } else {
                 mentionedUser.send(inviteEmbed).then(embedMessage => {

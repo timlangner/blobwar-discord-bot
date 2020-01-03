@@ -47,9 +47,11 @@ module.exports = {
                 .setURL('https://fanix.io/')
                 .setDescription(`Here's some information about the clan **${fullClanName}**!`)
                 .setThumbnail('https://i.imgur.com/davX7Gc.png')
-                .addField('Owner', `${clanOwner}`)
+                .addField('Owner', `${clanOwner}`, true)
+                .addField('Member Count', `${clanInfo.memberCount}`, true)
                 .addField('Members:', `${members.length > 0 ? members.map(m => m.toString()) : 'No Members'}`)
-                .setFooter(`Creation date: ${date.toUTCString()}`);
+                .addField(`Creation date`, `${date.toUTCString()}`)
+                .setFooter('Made with ♥ by Pake#0001');
                 return message.channel.send(infoEmbed);
 
         }
