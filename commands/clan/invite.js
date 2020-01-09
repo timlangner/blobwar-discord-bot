@@ -1,5 +1,6 @@
 const Discord = require('discord.js');
 const {prefix} = require('../../config');
+let alreadyMentionedUserIds = [];
 
 module.exports = {
     name: 'invite',
@@ -8,8 +9,8 @@ module.exports = {
     async execute(message, args, clan, member) {
         let isOwnerOfClan = true;
         let isMemberOfClan = true;
-        let allMemberClanData;
-        let allMemberClan;
+
+        console.log('ARRAY', alreadyMentionedUserIds);
 
         const authorUserId = message.author.id;
         const authorUsername = (await message.client.fetchUser(message.author.id)).username;
@@ -25,6 +26,8 @@ module.exports = {
         const clanRoleId = JSON.parse(JSON.stringify(clanRoleIdData)).roleId;
         const currentMemberCountData = await clan.findOne({where: {ownerUserId: authorUserId}, attributes: ['memberCount']});
         const currentMemberCount = JSON.parse(JSON.stringify(currentMemberCountData)).memberCount;
+        const allMemberClanData = await member.findAll({where: {clanName: memberClan.clanName}});
+        const allMemberClan = JSON.parse(JSON.stringify(allMemberClanData));
 
         // Check if user is already in a clan
         if (ownedClanData.length < 1) {
@@ -61,7 +64,12 @@ module.exports = {
 
             if (mentionedUser.id === memberClan.memberUserId) {
                 message.channel.send(`You can't invite a user that is already in your clan.`);
+            } else if (allMemberClan.find(member => member.memberUserId === mentionedUser.id)) {
+                message.channel.send(`You can't invite a user that is already in a clan.`);
+            } else if (alreadyMentionedUserIds.find(id => id === mentionedUser.id)) {
+                message.channel.send(`You can only invite a member once to avoid spamming.`);
             } else {
+                alreadyMentionedUserIds.push(mentionedUser.id);
                 mentionedUser.send(inviteEmbed).then(embedMessage => {
                     embedMessage.react('✅').then(() => embedMessage.react('❌'));
                     message.channel.send(`You've successfully invited <@${mentionedUser.id}>. He received a DM where he can **accept** or **decline** your clan invitation.`);
@@ -71,39 +79,41 @@ module.exports = {
                     };
 
                     embedMessage.awaitReactions(filter, {max: 1})
-                        .then(async collected => {
-                            allMemberClanData = await member.findAll({where: {clanName: memberClan.clanName}});
-                            allMemberClan = JSON.parse(JSON.stringify(allMemberClanData));
+                    .then(async collected => {
+                        const reaction = collected.first();
 
-                            if (!allMemberClan.find(member => member.memberUserId === mentionedUser.id)) {
-                                const reaction = collected.first();
-
-                                if (reaction.emoji.name === '✅') {
-                                    const user = await message.client.fetchUser(mentionedUser.id);
-                                    console.log('USEROBJECT', user);
-                                    console.log('USERNAME', user.username);
-                                    await mentionedUser.addRole(clanRoleId);
-                                    await member.create({
-                                        username: user.username,
-                                        memberUserId: mentionedUser.id,
-                                        clanName: ownedClanName.name,
-                                    });
-                                    await clan.update(
-                                        {
-                                            memberCount: currentMemberCount + 1
-                                        },
-                                        {
-                                            where: {name: ownedClanName.name}
-                                        });
-                                    await mentionedUser.send(acceptEmbed);
-                                } else {
-                                    await mentionedUser.send(declineEmbed);
+                        if (reaction.emoji.name === '✅') {
+                            const user = await message.client.fetchUser(mentionedUser.id);
+                            console.log('USEROBJECT', user);
+                            console.log('BEFORE MEMBERCOUNT', currentMemberCount);
+                            await member.create({
+                                username: user.username,
+                                memberUserId: mentionedUser.id,
+                                clanName: ownedClanName.name,
+                            });
+                            await clan.update(
+                                {
+                                    memberCount: currentMemberCount + 1
+                                },
+                                {
+                                    where: {name: ownedClanName.name}
+                                });
+                            const currentMemberCountData1 = await clan.findOne({where: {ownerUserId: authorUserId}, attributes: ['memberCount']});
+                            const currentMemberCount1 = await JSON.parse(JSON.stringify(currentMemberCountData1)).memberCount;
+                            console.log('AFTER MEMBERCOUNT', currentMemberCount1);
+                            await mentionedUser.addRole(clanRoleId);
+                            for (let i = 0; i < alreadyMentionedUserIds.length; i++){
+                                if ( alreadyMentionedUserIds[i] === mentionedUser.id) {
+                                    alreadyMentionedUserIds.splice(i, 1);
                                 }
-                            } else {
-                                return mentionedUser.send(`You're already in a clan.`);
                             }
-                        })
-                });
+                            await mentionedUser.send(acceptEmbed);
+                        } else {
+                            await mentionedUser.send(declineEmbed);
+                        }
+
+                    })
+                })
             }
         }
     }
