@@ -67,7 +67,7 @@ module.exports = {
             } else if (allMemberClan.find(member => member.memberUserId === mentionedUser.id)) {
                 message.channel.send(`You can't invite a user that is already in a clan.`);
             } else if (alreadyMentionedUserIds.find(id => id === mentionedUser.id)) {
-                message.channel.send(`You can only invite a member once to avoid spamming.`);
+                message.channel.send(`You already invited **${mentionedUser.user.username}** or he declined the invitation.`);
             } else {
                 alreadyMentionedUserIds.push(mentionedUser.id);
                 mentionedUser.send(inviteEmbed).then(embedMessage => {
