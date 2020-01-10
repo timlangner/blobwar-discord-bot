@@ -20,7 +20,7 @@ module.exports = {
         const memberClan = JSON.parse(JSON.stringify(memberClanData));
         const ownedClanData = await clan.findOne({where: {ownerUserId: authorUserId}, attributes: ['ownerUserId']});
         if (ownedClanData === null) {
-            message.channel.send(`You don't own a clan or a not the owner of your clan. Use **${prefix}help** if you want to know how to create a clan.`);
+            return message.channel.send(`You don't own a clan or a not the owner of your clan. Use **${prefix}help** if you want to know how to create a clan.`);
         }
         const ownedClanOwnerId = JSON.parse(JSON.stringify(ownedClanData)).ownerUserId;
         const ownedClanNameData = await clan.findOne({where: {ownerUserId: authorUserId}, attributes: ['name']});

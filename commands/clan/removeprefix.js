@@ -10,6 +10,9 @@ module.exports = {
         const authorUserId = await message.author.id;
         const memberClanData = await member.findOne({where: {memberUserId: authorUserId}});
         const memberClan = JSON.parse(JSON.stringify(memberClanData));
+        if (memberClan === null) {
+            return message.channel.send(`You're not in a clan. Use **${prefix}help** if you want to know how to create a clan.`);
+        }
         const allMemberClanData = await member.findAll({where: {clanName: memberClan.clanName}});
         const allMemberClan = JSON.parse(JSON.stringify(allMemberClanData));
         const ownedClanData = await clan.findOne({where: {name: memberClan.clanName}});

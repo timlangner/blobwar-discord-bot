@@ -10,6 +10,9 @@ module.exports = {
         const authorUserId = await message.author.id;
         const memberClanData = await member.findOne({where: {memberUserId: authorUserId}});
         const memberClan = JSON.parse(JSON.stringify(memberClanData));
+        if (memberClan === null) {
+            return message.channel.send(`You're not in a clan. Use **${prefix}help** if you want to know how to create a clan.`);
+        }
         const allMemberClanData = await member.findAll({where: {clanName: memberClan.clanName}});
         const allMemberClan = JSON.parse(JSON.stringify(allMemberClanData));
         const ownedClanData = await clan.findOne({where: {name: memberClan.clanName}});
@@ -26,9 +29,7 @@ module.exports = {
 
         console.log(message.guild.members.find(member => member.user.username === allMemberClan[0].username));
 
-        if (ownedClan === null) { // No Clan
-            return message.channel.send(`You're not in a clan. **Create** or join a clan first.`);
-        } else if (isOwnerOfClan) { // Owner
+        if (isOwnerOfClan) { // Owner
             await clan.update(
                 {
                     prefix: args[0]
@@ -45,8 +46,6 @@ module.exports = {
 
             return message.channel.send(`You successfully set a prefix for your clan **${memberClan.clanName}**.`);
         } else { // Member
-            await message.member.removeRole(ownedClan.roleId);
-            member.destroy({ where: { memberUserId: message.author.id } });
             return message.channel.send(`You've no permissions to set a prefix for the clan **${memberClan.clanName}**.`);
         }
     }
