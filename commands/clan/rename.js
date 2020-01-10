@@ -1,3 +1,5 @@
+const {prefix} = require('../../config');
+
 module.exports = {
     name: 'rename',
     description: 'Renames your clan',
@@ -8,13 +10,16 @@ module.exports = {
         const authorUserId = message.author.id;
         const memberClanData = await member.findOne({where: {memberUserId: authorUserId}});
         const memberClans = JSON.parse(JSON.stringify(memberClanData));
+        if (memberClans === null) {
+            return message.channel.send(`You're not in a clan. Use **${prefix}help** if you want to know how to create a clan.`);
+        }
         const ownedClanData = await clan.findOne({where: {name: memberClans.clanName}});
         const ownedClan = JSON.parse(JSON.stringify(ownedClanData));
 
         if (!args.length) {
-            return message.channel.send(`Unknown command. Use ${prefix}help to get a list of all commands.`)
-        } else if (args.length >= 0 && args.length < 1) {
-            return message.channel.send(`You didn't provide any arguments, ${message.author}!`);
+            return message.channel.send(`You have to provide a name in order to rename your clan.`);
+        } else if (typeof args === 'string') {
+            return message.channel.send(`You have to provide a string in order to rename your clan.`)
         }
 
         // Get the clan name as a string out of the argument-array
@@ -23,7 +28,7 @@ module.exports = {
         const newFinalClanName = newFullClanName.toString().toLowerCase();
 
         if (newFinalClanName.length > 25) {
-            message.channel.send('Your new clan name is too long. You can only use up to **25** characters in your name.');
+            return message.channel.send('Your new clan name is too long. You can only use up to **25** characters in your name.');
         }
 
         const oldClanName = ownedClan.name;

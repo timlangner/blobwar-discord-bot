@@ -19,6 +19,9 @@ module.exports = {
         const memberClanData = await member.findOne({where: {memberUserId: authorUserId}});
         const memberClan = JSON.parse(JSON.stringify(memberClanData));
         const ownedClanData = await clan.findOne({where: {ownerUserId: authorUserId}, attributes: ['ownerUserId']});
+        if (ownedClanData === null) {
+            return message.channel.send(`You don't own a clan or a not the owner of your clan. Use **${prefix}help** if you want to know how to create a clan.`);
+        }
         const ownedClanOwnerId = JSON.parse(JSON.stringify(ownedClanData)).ownerUserId;
         const ownedClanNameData = await clan.findOne({where: {ownerUserId: authorUserId}, attributes: ['name']});
         const ownedClanName = JSON.parse(JSON.stringify(ownedClanNameData));
@@ -43,6 +46,8 @@ module.exports = {
             return message.channel.send(`You didn't provide any arguments, ${message.author}!`);
         } else if (!isOwnerOfClan) {
             return message.channel.send(`You're not an owner of a clan. **Create** an own clan first and then try it again.`);
+        } else if (!mentionedUser) {
+            message.channel.send(`Please mention a user in order to invite someone. Use **${prefix}help** if you need help.`);
         } else if (isOwnerOfClan && mentionedUser.id === ownedClanOwnerId) {
             return message.channel.send(`You're the owner of the clan. You can't invite yourself ;)`);
         } else if (isOwnerOfClan) {
@@ -63,11 +68,17 @@ module.exports = {
                 .setDescription(`You've successfully declined the invitation and will not receive access to the clan area.`);
 
             if (mentionedUser.id === memberClan.memberUserId) {
-                message.channel.send(`You can't invite a user that is already in your clan.`);
+                return message.channel.send(`You can't invite a user that is already in your clan.`);
             } else if (allMemberClan.find(member => member.memberUserId === mentionedUser.id)) {
-                message.channel.send(`You can't invite a user that is already in a clan.`);
+                return message.channel.send(`You can't invite a user that is already in a clan.`);
             } else if (alreadyMentionedUserIds.find(id => id === mentionedUser.id)) {
-                message.channel.send(`You can only invite a member once to avoid spamming.`);
+                return message.channel.send(`You already invited **${mentionedUser.user.username}**.`);
+            } else if (mentionedUser.user.bot) {
+                if (mentionedUser.user.username === 'Fanix' && mentionedUser.user.discriminator === '5149') {
+                    return message.channel.send(`You can't invite myself ;).`);
+                } else {
+                    return message.channel.send(`You can't invite a bot.`);
+                }
             } else {
                 alreadyMentionedUserIds.push(mentionedUser.id);
                 mentionedUser.send(inviteEmbed).then(embedMessage => {
@@ -109,10 +120,22 @@ module.exports = {
                             }
                             await mentionedUser.send(acceptEmbed);
                         } else {
+                            for (let i = 0; i < alreadyMentionedUserIds.length; i++){
+                                if ( alreadyMentionedUserIds[i] === mentionedUser.id) {
+                                    alreadyMentionedUserIds.splice(i, 1);
+                                }
+                            }
                             await mentionedUser.send(declineEmbed);
                         }
 
                     })
+                }).catch(() => {
+                    for (let i = 0; i < alreadyMentionedUserIds.length; i++){
+                        if ( alreadyMentionedUserIds[i] === mentionedUser.id) {
+                            alreadyMentionedUserIds.splice(i, 1);
+                        }
+                    }
+                    return message.channel.send("I couldn't invite this user. He has disabled his dm's. ");
                 })
             }
         }

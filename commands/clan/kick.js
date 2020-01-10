@@ -1,3 +1,5 @@
+const {prefix} = require('../../config');
+
 module.exports = {
     name: 'kick',
     description: 'Kicks a member of your current clan',
@@ -8,13 +10,17 @@ module.exports = {
         const authorUserId = message.author.id;
         const memberClanData = await member.findOne({where: {memberUserId: authorUserId}});
         const memberClans = JSON.parse(JSON.stringify(memberClanData));
+        if (memberClans === null) {
+            return message.channel.send(`You're not in a clan. Use **${prefix}help** if you want to know how to create a clan.`);
+        }
         const allMemberClanData = await member.findAll({where: {clanName: memberClans.clanName}});
         const allMemberClans = JSON.parse(JSON.stringify(allMemberClanData));
         const ownedClanData = await clan.findOne({where: {name: allMemberClans[0].clanName}});
         const ownedClan = JSON.parse(JSON.stringify(ownedClanData));
-        const clanRoleId = JSON.parse(JSON.stringify(clanRoleIdData)).roleId;
 
-        if (mentionedUser.id === authorUserId) {
+        if (!mentionedUser) {
+            return message.channel.send("You didn't mention a user.");
+        } else if (mentionedUser.id === authorUserId) {
             return message.channel.send("You cant kick yourself. Use ``!c leave`` to disband your clan.");
         } else if (authorUserId === ownedClan.ownerUserId && allMemberClans.find(member => member.memberUserId === mentionedUser.id)) {
             await mentionedUser.removeRole(clanRoleId);

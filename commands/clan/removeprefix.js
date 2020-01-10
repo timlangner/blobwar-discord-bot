@@ -10,6 +10,9 @@ module.exports = {
         const authorUserId = await message.author.id;
         const memberClanData = await member.findOne({where: {memberUserId: authorUserId}});
         const memberClan = JSON.parse(JSON.stringify(memberClanData));
+        if (memberClan === null) {
+            return message.channel.send(`You're not in a clan. Use **${prefix}help** if you want to know how to create a clan.`);
+        }
         const allMemberClanData = await member.findAll({where: {clanName: memberClan.clanName}});
         const allMemberClan = JSON.parse(JSON.stringify(allMemberClanData));
         const ownedClanData = await clan.findOne({where: {name: memberClan.clanName}});
@@ -35,7 +38,9 @@ module.exports = {
                     }
                 );
                 for (let i=0; i < allMemberClan.length; i++) {
-                    await  message.guild.members.find(member => member.user.username === allMemberClan[i].username).setNickname(`${allMemberClan[i].username}`);
+                    if (message.guild.ownerID === allMemberClan[i].memberUserId) {
+                        console.log(`Couldn't change owners nickname.`);
+                    } else await  message.guild.members.find(member => member.user.username === allMemberClan[i].username).setNickname(`${allMemberClan[i].username}`);
                 }
 
                 return message.channel.send(`You successfully removed the prefix for your clan **${memberClan.clanName}**.`);

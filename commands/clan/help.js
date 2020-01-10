@@ -9,7 +9,7 @@ module.exports = {
         const ownerAvatar = (await message.client.fetchUser('185053226641522690')).avatarURL;
         const mainCommands = [`!c create <name> - Create a clan`, `!c leave - Leave your current clan`];
         const manageCommands = [`!c invite <@user> - Invite a player to your clan`, `!c kick <@player> - Kick a player from your clan`, `!c rename <name> - Rename your clan`];
-        const customizeCommands = [`!c prefix <prefix> - Sets your clan's prefix`, `!c removeprefix - Removes your clan’s custom prefix`];
+        const customizeCommands = [`!c setprefix <prefix> - Sets your clan's prefix`, `!c removeprefix - Removes your clan’s custom prefix`];
         const otherCommands = [`!c help - List of all commands`, `!c info <clan> - Get informations of a clan`];
 
         const infoEmbed = new Discord.RichEmbed()
