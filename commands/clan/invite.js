@@ -43,6 +43,8 @@ module.exports = {
             return message.channel.send(`You didn't provide any arguments, ${message.author}!`);
         } else if (!isOwnerOfClan) {
             return message.channel.send(`You're not an owner of a clan. **Create** an own clan first and then try it again.`);
+        } else if (!mentionedUser) {
+            message.channel.send(`Please mention a user in order to invite someone. Use **!c help** if you need help.`);
         } else if (isOwnerOfClan && mentionedUser.id === ownedClanOwnerId) {
             return message.channel.send(`You're the owner of the clan. You can't invite yourself ;)`);
         } else if (isOwnerOfClan) {
@@ -115,6 +117,11 @@ module.exports = {
                             }
                             await mentionedUser.send(acceptEmbed);
                         } else {
+                            for (let i = 0; i < alreadyMentionedUserIds.length; i++){
+                                if ( alreadyMentionedUserIds[i] === mentionedUser.id) {
+                                    alreadyMentionedUserIds.splice(i, 1);
+                                }
+                            }
                             await mentionedUser.send(declineEmbed);
                         }
 
