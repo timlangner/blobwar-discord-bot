@@ -11,6 +11,8 @@ module.exports = {
         if (memberClan === null) {
             message.channel.send(`You're not in a clan. **Create** or join a clan first before you try to leave it.`);
         }
+        const allMemberClanData = await member.findAll({where: {clanName: memberClan.clanName}});
+        const allMemberClan = JSON.parse(JSON.stringify(allMemberClanData));
         const ownedClanData = await clan.findOne({where: {name: memberClan.clanName}});
         const ownedClan = JSON.parse(JSON.stringify(ownedClanData));
 
@@ -25,12 +27,17 @@ module.exports = {
             await message.guild.roles.find(role => role.id === ownedClan.roleId).delete();
             console.log('----', ownedClan.name.replace(/\s/g, ""));
             await message.guild.channels.find(channel => channel.name === ownedClan.name.replace(/\s/g, "-")).delete();
+            for (let i=0; i < allMemberClan.length; i++) {
+                await message.guild.members.find(member => member.user.username === allMemberClan[i].username).setNickname(`${allMemberClan[i].username}`);
+            }
             await clan.destroy({ where: { ownerUserId: ownedClan.ownerUserId } });
             await member.destroy({ where: { clanName: memberClan.clanName } });
             return message.channel.send(`You successfully disbanded your own clan **${memberClan.clanName}**.`);
         } else { // Member
             await message.member.removeRole(ownedClan.roleId);
+            await message.member.setNickname(message.member.user.username);
             member.destroy({ where: { memberUserId: message.author.id } });
+
             return message.channel.send(`You successfully left the clan **${memberClan.clanName}**.`);
         }
     }
