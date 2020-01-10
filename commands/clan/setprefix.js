@@ -38,7 +38,9 @@ module.exports = {
                 }
             );
             for (let i=0; i < allMemberClan.length; i++) {
-                await  message.guild.members.find(member => member.user.username === allMemberClan[i].username).setNickname(`[${args[0]}] ${allMemberClan[i].username}`);
+                if (message.guild.ownerID === allMemberClan[i].memberUserId) {
+                    console.log(`Couldn't change owners nickname.`);
+                } else await message.guild.members.find(member => member.user.username === allMemberClan[i].username).setNickname(`[${args[0]}] ${allMemberClan[i].username}`);
             }
 
             return message.channel.send(`You successfully set a prefix for your clan **${memberClan.clanName}**.`);

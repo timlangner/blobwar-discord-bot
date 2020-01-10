@@ -35,7 +35,9 @@ module.exports = {
                     }
                 );
                 for (let i=0; i < allMemberClan.length; i++) {
-                    await  message.guild.members.find(member => member.user.username === allMemberClan[i].username).setNickname(`${allMemberClan[i].username}`);
+                    if (message.guild.ownerID === allMemberClan[i].memberUserId) {
+                        console.log(`Couldn't change owners nickname.`);
+                    } else await  message.guild.members.find(member => member.user.username === allMemberClan[i].username).setNickname(`${allMemberClan[i].username}`);
                 }
 
                 return message.channel.send(`You successfully removed the prefix for your clan **${memberClan.clanName}**.`);

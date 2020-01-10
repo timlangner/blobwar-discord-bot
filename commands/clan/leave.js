@@ -15,6 +15,8 @@ module.exports = {
         const allMemberClan = JSON.parse(JSON.stringify(allMemberClanData));
         const ownedClanData = await clan.findOne({where: {name: memberClan.clanName}});
         const ownedClan = JSON.parse(JSON.stringify(ownedClanData));
+        const currentMemberCountData = await clan.findOne({where: {roleId: ownedClan.roleId}, attributes: ['memberCount']});
+        const currentMemberCount = JSON.parse(JSON.stringify(currentMemberCountData)).memberCount;
 
         // Check if user is in a clan
         if (ownedClan !== null && ownedClan.ownerUserId === message.author.id) {
@@ -27,8 +29,14 @@ module.exports = {
             await message.guild.roles.find(role => role.id === ownedClan.roleId).delete();
             console.log('----', ownedClan.name.replace(/\s/g, ""));
             await message.guild.channels.find(channel => channel.name === ownedClan.name.replace(/\s/g, "-")).delete();
+
             for (let i=0; i < allMemberClan.length; i++) {
-                await message.guild.members.find(member => member.user.username === allMemberClan[i].username).setNickname(`${allMemberClan[i].username}`);
+                console.log('HIER', allMemberClan[i].memberUserId);
+                if (message.guild.ownerID === allMemberClan[i].memberUserId) {
+                    console.log(`Couldn't change owners nickname.`);
+                } else {
+                    await message.guild.members.find(member => member.user.username === allMemberClan[i].username).setNickname(`${allMemberClan[i].username}`);
+                }
             }
             await clan.destroy({ where: { ownerUserId: ownedClan.ownerUserId } });
             await member.destroy({ where: { clanName: memberClan.clanName } });
@@ -36,6 +44,13 @@ module.exports = {
         } else { // Member
             await message.member.removeRole(ownedClan.roleId);
             await message.member.setNickname(message.member.user.username);
+            await clan.update(
+                {
+                    memberCount: currentMemberCount - 1
+                },
+                {
+                    where: {name: ownedClan.name}
+                });
             member.destroy({ where: { memberUserId: message.author.id } });
 
             return message.channel.send(`You successfully left the clan **${memberClan.clanName}**.`);
