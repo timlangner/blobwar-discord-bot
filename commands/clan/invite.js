@@ -68,16 +68,16 @@ module.exports = {
                 .setDescription(`You've successfully declined the invitation and will not receive access to the clan area.`);
 
             if (mentionedUser.id === memberClan.memberUserId) {
-                message.channel.send(`You can't invite a user that is already in your clan.`);
+                return message.channel.send(`You can't invite a user that is already in your clan.`);
             } else if (allMemberClan.find(member => member.memberUserId === mentionedUser.id)) {
-                message.channel.send(`You can't invite a user that is already in a clan.`);
+                return message.channel.send(`You can't invite a user that is already in a clan.`);
             } else if (alreadyMentionedUserIds.find(id => id === mentionedUser.id)) {
-                message.channel.send(`You already invited **${mentionedUser.user.username}**.`);
+                return message.channel.send(`You already invited **${mentionedUser.user.username}**.`);
             } else if (mentionedUser.user.bot) {
                 if (mentionedUser.user.username === 'Fanix' && mentionedUser.user.discriminator === '5149') {
-                    message.channel.send(`You can't invite myself ;).`);
+                    return message.channel.send(`You can't invite myself ;).`);
                 } else {
-                    message.channel.send(`You can't invite a bot.`);
+                    return message.channel.send(`You can't invite a bot.`);
                 }
             } else {
                 alreadyMentionedUserIds.push(mentionedUser.id);
@@ -129,7 +129,14 @@ module.exports = {
                         }
 
                     })
-                }).catch(message.channel.send("I couldn't invite this user. He has disabled his dm's. "))
+                }).catch(() => {
+                    for (let i = 0; i < alreadyMentionedUserIds.length; i++){
+                        if ( alreadyMentionedUserIds[i] === mentionedUser.id) {
+                            alreadyMentionedUserIds.splice(i, 1);
+                        }
+                    }
+                    return message.channel.send("I couldn't invite this user. He has disabled his dm's. ");
+                })
             }
         }
     }
