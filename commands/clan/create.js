@@ -22,7 +22,7 @@ module.exports = {
         }
 
         if (!args.length) {
-            return message.channel.send(`You didn't provide any arguments, ${message.author}!`);
+            return message.channel.send(`You didn't provide a clan name, ${message.author}!`);
         } else if (isOwnerOfClan || isMemberOfClan) {
             return message.channel.send(`You're already in a clan. **Leave** it first and then try it again.`);
         }

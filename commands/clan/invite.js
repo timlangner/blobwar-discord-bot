@@ -19,6 +19,9 @@ module.exports = {
         const memberClanData = await member.findOne({where: {memberUserId: authorUserId}});
         const memberClan = JSON.parse(JSON.stringify(memberClanData));
         const ownedClanData = await clan.findOne({where: {ownerUserId: authorUserId}, attributes: ['ownerUserId']});
+        if (ownedClanData === null) {
+            message.channel.send(`You don't own a clan or a not the owner of your clan. Use **${prefix}help** if you want to know how to create a clan.`);
+        }
         const ownedClanOwnerId = JSON.parse(JSON.stringify(ownedClanData)).ownerUserId;
         const ownedClanNameData = await clan.findOne({where: {ownerUserId: authorUserId}, attributes: ['name']});
         const ownedClanName = JSON.parse(JSON.stringify(ownedClanNameData));
@@ -44,7 +47,7 @@ module.exports = {
         } else if (!isOwnerOfClan) {
             return message.channel.send(`You're not an owner of a clan. **Create** an own clan first and then try it again.`);
         } else if (!mentionedUser) {
-            message.channel.send(`Please mention a user in order to invite someone. Use **!c help** if you need help.`);
+            message.channel.send(`Please mention a user in order to invite someone. Use **${prefix}help** if you need help.`);
         } else if (isOwnerOfClan && mentionedUser.id === ownedClanOwnerId) {
             return message.channel.send(`You're the owner of the clan. You can't invite yourself ;)`);
         } else if (isOwnerOfClan) {
@@ -126,7 +129,7 @@ module.exports = {
                         }
 
                     })
-                })
+                }).catch(message.channel.send("I couldn't invite this user. He has disabled his dm's. "))
             }
         }
     }
