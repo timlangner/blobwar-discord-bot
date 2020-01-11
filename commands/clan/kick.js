@@ -17,6 +17,8 @@ module.exports = {
         const allMemberClans = JSON.parse(JSON.stringify(allMemberClanData));
         const ownedClanData = await clan.findOne({where: {name: allMemberClans[0].clanName}});
         const ownedClan = JSON.parse(JSON.stringify(ownedClanData));
+        const clanRoleIdData = await clan.findOne({where: {name: allMemberClans[0].clanName}});
+        const clanRoleId = JSON.parse(JSON.stringify(clanRoleIdData)).roleId;
 
         if (!mentionedUser) {
             return message.channel.send("You didn't mention a user.");
