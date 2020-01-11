@@ -27,7 +27,7 @@ module.exports = {
             return message.channel.send(`You're not in a clan. **Create** or join a clan first.`);
         } else if (isOwnerOfClan) { // Owner
             if (ownedClan.prefix === null) {
-                return message.channel.send(`Your Clan has no prefix.`);
+                return message.channel.send(`Your Clan has no prefix. Use **${prefix}help** to find out how to set a prefix.`);
             } else {
                 await clan.update(
                     {
