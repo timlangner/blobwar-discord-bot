@@ -72,7 +72,7 @@ module.exports = {
             } else if (allMemberClan.find(member => member.memberUserId === mentionedUser.id)) {
                 return message.channel.send(`You can't invite a user that is already in a clan.`);
             } else if (alreadyMentionedUserIds.find(id => id === mentionedUser.id)) {
-                return message.channel.send(`You already invited **${mentionedUser.user.username}**.`);
+                return message.channel.send(`**${mentionedUser.user.username}** already has a pending invite.`);
             } else if (mentionedUser.user.bot) {
                 if (mentionedUser.user.username === 'Fanix' && mentionedUser.user.discriminator === '5149') {
                     return message.channel.send(`You can't invite myself ;).`);
