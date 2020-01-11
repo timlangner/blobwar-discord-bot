@@ -47,7 +47,6 @@ module.exports = {
             }
         } else { // Member
             await message.member.removeRole(ownedClan.roleId);
-            member.destroy({ where: { memberUserId: message.author.id } });
             return message.channel.send(`You've no permissions to remove the prefix for the clan **${memberClan.clanName}**.`);
         }
     }

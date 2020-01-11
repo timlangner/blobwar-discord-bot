@@ -135,6 +135,11 @@ module.exports = {
                             alreadyMentionedUserIds.splice(i, 1);
                         }
                     }
+                    for (let i = 0; i < authorUserIdList.length; i++){
+                        if ( authorUserIdList[i] === mentionedUser.id) {
+                            authorUserIdList.splice(i, 1);
+                        }
+                    }
                     return message.channel.send("I couldn't invite this user. He has disabled his dm's. ");
                 })
             }
