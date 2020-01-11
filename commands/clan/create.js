@@ -31,10 +31,13 @@ module.exports = {
         let clanName = args;
         let fullClanName = clanName.join(',').replace(/,/g, ' ').split();
         const finalClanName = fullClanName.toString().toLowerCase();
+        const regEx = /[.\-,;:<>|@!"$%&`/()=?{[\]}´+*#'~]/;
 
         // Check if clan name is longer than 25 characters
         if (finalClanName.length > 25) {
-            message.channel.send('Your clan name is too long. You can only use up to **25** characters in your name.');
+            return message.channel.send('Your clan name is too long. You can only use up to **25** characters in your name.');
+        } else if (regEx.test(finalClanName)) {
+            return message.channel.send('Your clan name contains unsupported characters. Please try a different name.');
         } else {
             // Add Clan into the database
             try {
