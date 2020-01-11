@@ -26,7 +26,7 @@ module.exports = {
         let newClanName = args;
         let newFullClanName = newClanName.join(',').replace(/,/g, ' ').split();
         const newFinalClanName = newFullClanName.toString().toLowerCase();
-        const regEx = /[.\-,;:<>|@!"$%&`/()=?{[\]}´+*#'~]/;
+        const regEx = /[.\-,;\n:<>|@!"$%&`/()=?{[\]}´+*#'~]/;
 
         const oldClanName = ownedClan.name;
 
