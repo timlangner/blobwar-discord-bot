@@ -30,21 +30,25 @@ module.exports = {
         console.log(message.guild.members.find(member => member.user.username === allMemberClan[0].username));
 
         if (isOwnerOfClan) { // Owner
-            await clan.update(
-                {
-                    prefix: args[0]
-                },
-                {
-                    where: {name: ownedClan.name}
+            if (args[0].length <= 3) {
+                await clan.update(
+                    {
+                        prefix: args[0]
+                    },
+                    {
+                        where: {name: ownedClan.name}
+                    }
+                );
+                for (let i=0; i < allMemberClan.length; i++) {
+                    if (message.guild.ownerID === allMemberClan[i].memberUserId) {
+                        console.log(`Couldn't change owners nickname.`);
+                    } else await message.guild.members.find(member => member.user.username === allMemberClan[i].username).setNickname(`[${args[0]}] ${allMemberClan[i].username}`);
                 }
-            );
-            for (let i=0; i < allMemberClan.length; i++) {
-                if (message.guild.ownerID === allMemberClan[i].memberUserId) {
-                    console.log(`Couldn't change owners nickname.`);
-                } else await message.guild.members.find(member => member.user.username === allMemberClan[i].username).setNickname(`[${args[0]}] ${allMemberClan[i].username}`);
+                return message.channel.send(`You successfully set a prefix for your clan **${memberClan.clanName}**.`);
+            } else {
+                return message.channel.send(`Your prefix is too long! It can't be longer than 3 characters.`);
             }
 
-            return message.channel.send(`You successfully set a prefix for your clan **${memberClan.clanName}**.`);
         } else { // Member
             return message.channel.send(`You've no permissions to set a prefix for the clan **${memberClan.clanName}**.`);
         }

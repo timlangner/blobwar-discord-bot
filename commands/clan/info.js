@@ -39,6 +39,7 @@ module.exports = {
 
             // Format CreationDate
             const date = new Date(clanInfo.createdAt);
+            const ownerAvatar = (await message.client.fetchUser('185053226641522690')).avatarURL;
             const infoEmbed = new Discord.RichEmbed()
                 .setColor('#0099ff')
                 .setTitle(`${finalClanName}`)
@@ -49,7 +50,7 @@ module.exports = {
                 .addField('Member Count', `${clanInfo.memberCount}`, true)
                 .addField('Members:', `${members.length > 0 ? members.map(m => m.toString()) : 'No Members'}`)
                 .addField(`Creation date`, `${date.toUTCString()}`)
-                .setFooter('Made with ♥ by Pake#0001');
+                .setFooter('Made with ♥ by Pake#0001', ownerAvatar);
                 return message.channel.send(infoEmbed);
 
         }

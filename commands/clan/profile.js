@@ -34,7 +34,7 @@ module.exports = {
                 .then((response) => {
                     return response.json();
                 })
-                .then((data) => {
+                .then(async (data) => {
                     if (data.length === 0) {
                         return message.channel.send('Please provide a valid username.');
                     }
@@ -92,6 +92,7 @@ module.exports = {
                             break;
                     }
 
+                    const ownerAvatar = (await message.client.fetchUser('185053226641522690')).avatarURL;
                     const profileEmbed = new Discord.RichEmbed()
                         .setColor('#0099ff')
                         .setTitle(`${args[0]}`)
@@ -104,7 +105,7 @@ module.exports = {
                         .addField(`Kills`, `${userKills}`, true)
                         .addField(`Deaths`, `${userDeaths}`, true)
                         .addField(`K/D`, `${userKD}`, true)
-                        .setFooter('Made with ♥ by Pake#0001');
+                        .setFooter('Made with ♥ by Pake#0001', ownerAvatar);
                     return message.channel.send(profileEmbed);
                 }).catch(() => {
                     return message.channel.send('Oops! Looks like something went wrong with your request. Please try it again later.');
