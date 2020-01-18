@@ -13,32 +13,32 @@ module.exports = {
             const response = await fetch('https://eu.fanix.io:2199/');
             const data = await response.json();
 
-            let server;
-            let servername;
-            let servercount;
-            let currentcount;
-
-            for (let key in data) {
-                let category = data[key];
-                let i = 0;
-
-                for (let counter in category)
-                {
-                    if (category.hasOwnProperty(counter)) {
-                        server = category[counter];
-                        server = server.split(' - ');
-                        servername = server[0];
-                        servercount = server[1];
-                        servercount = servercount.split('/');
-                        currentcount = servercount[0];
-
-                        console.log('server', server);
-                        console.log('servername', servername);
-                        console.log('servercount', servercount);
-                        console.log('currentcount', currentcount);
-                    }
-                }
-            }
+            // let server;
+            // let servername;
+            // let servercount;
+            // let currentcount;
+            //
+            // for (let key in data) {
+            //     let category = data[key];
+            //     let i = 0;
+            //
+            //     for (let counter in category)
+            //     {
+            //         if (category.hasOwnProperty(counter)) {
+            //             server = category[counter];
+            //             server = server.split(' - ');
+            //             servername = server[0];
+            //             servercount = server[1];
+            //             servercount = servercount.split('/');
+            //             currentcount = servercount[0];
+            //
+            //             console.log('server', server);
+            //             console.log('servername', servername);
+            //             console.log('servercount', servercount);
+            //             console.log('currentcount', currentcount);
+            //         }
+            //     }
+            // }
 
             switch (input) {
                 case 'Ultrasplit':
@@ -48,6 +48,7 @@ module.exports = {
                     const u3 = u2.replace('[', '');
                     const u4 = u3.replace(']', '');
                     const uFinal = u4.replace(/"/g, '');
+
                     const uOwnerAvatar = (await message.client.fetchUser('185053226641522690')).avatarURL;
                     const uServerEmbed = new Discord.RichEmbed()
                         .setColor('#0099ff')
@@ -56,7 +57,6 @@ module.exports = {
                         .setDescription(`Here are some stats about the Ultrasplit servers.`)
                         .addField('Overview', `${uFinal}`, true)
                         .addField(`Servers`, `${data.Ultrasplit.length}`, true)
-                        .addField(`Total Players`, `${uCurrentPlayers}`, true)
                         .setFooter('Made with ♥ by Pake#0001', uOwnerAvatar);
                     await message.channel.send(uServerEmbed);
                     break;
