@@ -19,7 +19,7 @@ module.exports = {
         const ownedClan = JSON.parse(JSON.stringify(ownedClanData));
 
         if (!args.length) {
-            return message.channel.send(`You didn't provide any arguments, ${message.author}!`);
+            return message.channel.send(`You didn't provide a prefix, ${message.author}!`);
         }
 
         // Check if user is in a clan
@@ -42,7 +42,10 @@ module.exports = {
                 for (let i=0; i < allMemberClan.length; i++) {
                     if (message.guild.ownerID === allMemberClan[i].memberUserId) {
                         console.log(`Couldn't change owners nickname.`);
-                    } else await message.guild.members.find(member => member.user.username === allMemberClan[i].username).setNickname(`[${args[0]}] ${allMemberClan[i].username}`);
+                    } else {
+                        await message.guild.members.find(member => member.user.username === allMemberClan[i].username).setNickname(`[${args[0]}] ${allMemberClan[i].username}`);
+                        console.log('Changed nickname');
+                    }
                 }
                 return message.channel.send(`You successfully set a prefix for your clan **${memberClan.clanName}**.`);
             } else {
