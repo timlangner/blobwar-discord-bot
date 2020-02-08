@@ -20,6 +20,7 @@ module.exports = {
         if (!args.length) {
             return message.channel.send(`You didn't provide a username, ${message.author}!`);
         } else {
+            let username = encodeURI(args[0]);
             let userXP;
             let userLevel;
             let userRank;
@@ -30,7 +31,7 @@ module.exports = {
 
             let rankPicURL;
 
-            await fetch(`http://eu.fanix.io:7000/api/getRank/${args[0]}`)
+            await fetch(`http://eu.fanix.io:7000/api/getRank/${username}`)
                 .then((response) => {
                     return response.json();
                 })
