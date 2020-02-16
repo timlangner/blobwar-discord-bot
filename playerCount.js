@@ -33,8 +33,8 @@ const getCurrentPlayers = async (message, playerCount) => {
             const response = await fetch(ips[i]);
             const stats = await response.json();
             currentPlayers += stats.current_players;
-        } catch {
-            console.log('Could not fetch');
+        } catch (e) {
+            console.log('Could not fetch\n' + e);
         }
     }
 
