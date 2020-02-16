@@ -133,7 +133,7 @@ client.on('message', message => {
         message.channel.send('Successfully started the Player Count updater!');
         setInterval(() => {
             getPlayerCount.getCurrentPlayers(message, playerCount);
-        }, 10000);
+        }, 30000);
     }
 
     if (!message.content.startsWith(prefix) || message.author.bot) return;
