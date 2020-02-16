@@ -1,7 +1,8 @@
 const fs = require('fs');
 const Discord = require('discord.js');
 const Sequelize = require('sequelize');
-const {prefix, token} = require('./config.json');
+const { prefix, token } = require('./config.json');
+const getPlayerCount = require('./playerCount.js');
 
 // create a new Discord client
 const client = new Discord.Client();
@@ -28,7 +29,7 @@ const clan = sequelize.define('clan', {
     name: {
         type: Sequelize.STRING,
         unique: true,
-        defaultValue: "",
+        defaultValue: '',
         allowNull: false,
     },
     ownerUserId: {
@@ -66,7 +67,7 @@ const member = sequelize.define('member', {
     username: {
         type: Sequelize.STRING,
         unique: true,
-        defaultValue: "",
+        defaultValue: '',
         allowNull: false,
     },
     memberUserId: {
@@ -83,8 +84,27 @@ const member = sequelize.define('member', {
     },
 });
 
+// Create "PlayerCount" table
+const playerCount = sequelize.define('playerCount', {
+    id: {
+        primaryKey: true,
+        autoIncrement: true,
+        type: Sequelize.INTEGER,
+        unique: true,
+        allowNull: false,
+    },
+    playerPeak: {
+        type: Sequelize.INTEGER,
+        unique: false,
+        defaultValue: 0,
+        allowNull: false,
+    },
+});
+
 // Find all commands
-const commandFiles = fs.readdirSync('./commands/clan').filter(file => file.endsWith('.js'));
+const commandFiles = fs
+    .readdirSync('./commands/clan')
+    .filter(file => file.endsWith('.js'));
 
 for (const file of commandFiles) {
     const command = require(`./commands/clan/${file}`);
@@ -105,16 +125,26 @@ client.once('ready', async () => {
     // sync the tables
     clan.sync();
     member.sync();
+    playerCount.sync();
 });
 
 client.on('message', message => {
+    if (message.content.startsWith('!startPlayerCount')) {
+        message.channel.send('Successfully started the Player Count updater!');
+        setInterval(() => {
+            getPlayerCount.getCurrentPlayers(message, playerCount);
+        }, 30000);
+    }
+
     if (!message.content.startsWith(prefix) || message.author.bot) return;
 
     const args = message.content.slice(prefix.length).split(/ +/);
     const command = args.shift().toLowerCase();
 
     if (!client.commands.has(command)) {
-        return message.channel.send(`Unknown command. Use **${prefix}help** to get a list of all commands.`);
+        return message.channel.send(
+            `Unknown command. Use **${prefix}help** to get a list of all commands.`,
+        );
     } else {
         try {
             client.commands.get(command).execute(message, args, clan, member);
