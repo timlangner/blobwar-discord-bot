@@ -4,8 +4,6 @@ const Sequelize = require('sequelize');
 const { prefix, token } = require('./config.json');
 const getPlayerCount = require('./playerCount.js');
 
-const currentPlayers = 0;
-
 // create a new Discord client
 const client = new Discord.Client();
 client.commands = new Discord.Collection();
