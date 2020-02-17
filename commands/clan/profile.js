@@ -1,15 +1,23 @@
 const Discord = require('discord.js');
 const fetch = require('node-fetch');
 
-const sec2time = (timeInSeconds) => {
-    let pad = function(num, size) { return ('000' + num).slice(size * -1); },
-        time = parseFloat(timeInSeconds).toFixed(3),
-        hours = Math.floor(time / 60 / 60),
-        minutes = Math.floor(time / 60) % 60,
-        seconds = Math.floor(time - minutes * 60),
-        milliseconds = time.slice(-3);
+// const sec2time = (timeInSeconds) => {
+//     let pad = function(num, size) { return ('000' + num).slice(size * -1); },
+//         time = parseFloat(timeInSeconds).toFixed(3),
+//         hours = Math.floor(time / 60 / 60),
+//         minutes = Math.floor(time / 60) % 60,
+//         seconds = Math.floor(time - minutes * 60),
 
-    return pad(hours, 2) + ':' + pad(minutes, 2) + ':' + pad(seconds, 2);
+//     return pad(hours, 2) + ':' + pad(minutes, 2) + ':' + pad(seconds, 2);
+// };
+
+const secondsToHms = timeInSeconds => {
+    timeInSeconds = Number(timeInSeconds);
+    var h = Math.floor(timeInSeconds / 3600);
+    var m = Math.floor((timeInSeconds % 3600) / 60);
+    var s = Math.floor((timeInSeconds % 3600) % 60);
+
+    return h + ':' + m + ':' + s;
 };
 
 module.exports = {
@@ -18,7 +26,9 @@ module.exports = {
     guildOnly: true,
     async execute(message, args, clan, member) {
         if (!args.length) {
-            return message.channel.send(`You didn't provide a username, ${message.author}!`);
+            return message.channel.send(
+                `You didn't provide a username, ${message.author}!`,
+            );
         } else {
             let username = encodeURI(args[0]);
             let userXP;
@@ -32,15 +42,17 @@ module.exports = {
             let rankPicURL;
 
             await fetch(`http://eu.fanix.io:7000/api/getRank/${username}`)
-                .then((response) => {
+                .then(response => {
                     return response.json();
                 })
-                .then(async (data) => {
+                .then(async data => {
                     if (data.length === 0) {
-                        return message.channel.send('Please provide a valid username.');
+                        return message.channel.send(
+                            'Please provide a valid username.',
+                        );
                     }
                     console.log(data);
-                    userXP =  data.map(user => user.xp);
+                    userXP = data.map(user => user.xp);
                     userLevel = data.map(user => user.level);
                     userKills = data.map(user => user.kills);
                     userDeaths = data.map(user => user.deaths);
@@ -93,24 +105,35 @@ module.exports = {
                             break;
                     }
 
-                    const ownerAvatar = (await message.client.fetchUser('185053226641522690')).avatarURL;
+                    const ownerAvatar = (
+                        await message.client.fetchUser('185053226641522690')
+                    ).avatarURL;
                     const profileEmbed = new Discord.RichEmbed()
                         .setColor('#0099ff')
                         .setTitle(`${args[0]}`)
                         .setURL('https://fanix.io/')
-                        .setDescription(`Here's some information about the user **${args[0]}**!`)
+                        .setDescription(
+                            `Here's some information about the user **${args[0]}**!`,
+                        )
                         .setThumbnail(rankPicURL)
                         .addField('Current rank', `${userRank}`, true)
                         .addField('Total XP:', `${userXP}`, true)
-                        .addField(`Time Played`, sec2time(userTimePlayed), true)
+                        .addField(
+                            `Time Played`,
+                            secondsToHms(userTimePlayed),
+                            true,
+                        )
                         .addField(`Kills`, `${userKills}`, true)
                         .addField(`Deaths`, `${userDeaths}`, true)
                         .addField(`K/D`, `${userKD}`, true)
                         .setFooter('Made with ♥ by Pake#0001', ownerAvatar);
                     return message.channel.send(profileEmbed);
-                }).catch(() => {
-                    return message.channel.send('Oops! Looks like something went wrong with your request. Please try it again later.');
-            });
+                })
+                .catch(() => {
+                    return message.channel.send(
+                        'Oops! Looks like something went wrong with your request. Please try it again later.',
+                    );
+                });
         }
-    }
+    },
 };
