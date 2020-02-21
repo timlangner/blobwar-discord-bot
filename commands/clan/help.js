@@ -5,12 +5,27 @@ module.exports = {
     description: 'Displays all available commands,',
     guildOnly: true,
     async execute(message) {
-
-        const ownerAvatar = (await message.client.fetchUser('185053226641522690')).avatarURL;
-        const mainCommands = [`!c create <name> - Create a clan`, `!c profile <username> - Check your Fanix profile`, `!c leave - Leave your current clan`];
-        const manageCommands = [`!c invite <@user> - Invite a player to your clan`, `!c kick <@player> - Kick a player from your clan`, `!c rename <name> - Rename your clan`];
-        const customizeCommands = [`!c setprefix <prefix> - Sets your clan's prefix`, `!c removeprefix - Removes your clan’s custom prefix`];
-        const otherCommands = [`!c help - List of all commands`, `!c info <clan> - Get informations of a clan`];
+        const ownerAvatar = (
+            await message.client.fetchUser('185053226641522690')
+        ).avatarURL;
+        const mainCommands = [
+            `!c create <name> - Create a clan`,
+            `!c profile <username> - Check your Fanix profile`,
+            `!c leaderboard - Check the Top 10 Leaderboard``!c leave - Leave your current clan`,
+        ];
+        const manageCommands = [
+            `!c invite <@user> - Invite a player to your clan`,
+            `!c kick <@player> - Kick a player from your clan`,
+            `!c rename <name> - Rename your clan`,
+        ];
+        const customizeCommands = [
+            `!c setprefix <prefix> - Sets your clan's prefix`,
+            `!c removeprefix - Removes your clan’s custom prefix`,
+        ];
+        const otherCommands = [
+            `!c help - List of all commands`,
+            `!c info <clan> - Get informations of a clan`,
+        ];
 
         const infoEmbed = new Discord.RichEmbed()
             .setColor('#0099ff')
@@ -25,5 +40,5 @@ module.exports = {
             .setFooter('Made with ♥ by Pake#0001', ownerAvatar);
 
         return message.channel.send(infoEmbed);
-    }
+    },
 };
