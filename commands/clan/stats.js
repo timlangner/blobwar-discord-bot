@@ -154,6 +154,28 @@ module.exports = {
                     }
                 }
                 await message.channel.send(serverEmbed);
+            } else if (input === 'battle royale') {
+                for (let i = 0; i < battleRoyale.length; i++) {
+                    if (i === 0) {
+                        serverEmbed.setDescription(
+                            'Here are some stats about the Battle Royale servers.',
+                        );
+                    }
+                    try {
+                        const response = await fetch(battleRoyale[i]);
+                        const stats = await response.json();
+                        serverEmbed.addField(
+                            `Battle Royale ${i + 1}:`,
+                            `${stats.current_players}/${stats.max_players} Players (${stats.spectators} Spectators)`,
+                        );
+                    } catch (e) {
+                        serverEmbed.addField(
+                            `Battle Royale ${i + 1}:`,
+                            `Offline`,
+                        );
+                    }
+                }
+                await message.channel.send(serverEmbed);
             } else {
                 return message.channel.send(
                     'Please provide a valid server name.',
