@@ -11,7 +11,9 @@ module.exports = {
         const mainCommands = [
             `!c create <name> - Create a clan`,
             `!c profile <username> - Check your Fanix profile`,
-            `!c leaderboard - Check the Top 10 Leaderboard``!c leave - Leave your current clan`,
+            `!c leaderboard - Check the Top 10 Leaderboard`,
+            `!c suggest - Create a suggestion for the game`,
+            `!c leave - Leave your current clan`,
         ];
         const manageCommands = [
             `!c invite <@user> - Invite a player to your clan`,
