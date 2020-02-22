@@ -15,7 +15,7 @@ module.exports = {
         await message.author.createDM();
         try {
             await message.author.send('Enter a title for your suggestion');
-        } catch {
+        } catch (e) {
             hasDMsOff = true;
             await message.channel.send(
                 `Please enable your dm's to create a suggestion.`,
@@ -32,7 +32,7 @@ module.exports = {
                     errors: ['time'],
                 });
                 title = msg.first().content;
-            } catch {
+            } catch (e) {
                 isTitleMissed = true;
                 message.author.send('You did not enter a title on time.');
             }
@@ -51,7 +51,7 @@ module.exports = {
                         },
                     );
                     description = msg.first().content;
-                } catch {
+                } catch (e) {
                     isDescriptionMissed = true;
                     message.author.send(
                         'You did not enter a description on time.',
@@ -67,7 +67,6 @@ module.exports = {
                     .setColor('#0099ff')
                     .setTitle(title)
                     .setDescription(description)
-                    .setThumbnail('https://i.imgur.com/davX7Gc.png')
                     .setFooter(
                         `Suggested by ${message.author.tag}`,
                         userAvatar,
@@ -81,7 +80,9 @@ module.exports = {
                     .find(c => c.id === '632521772071256074')
                     .send(suggestionEmbed)
                     .then(embed => {
-                        embed.react('✅').then(() => embed.react('❌'));
+                        embed
+                            .react('680835679592251456')
+                            .then(() => embed.react('680835693013893136'));
                     });
             }
         }
