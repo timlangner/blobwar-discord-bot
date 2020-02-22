@@ -154,6 +154,10 @@ module.exports = {
                     }
                 }
                 await message.channel.send(serverEmbed);
+            } else {
+                return message.channel.send(
+                    'Please provide a valid server name.',
+                );
             }
         }
     },
