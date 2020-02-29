@@ -128,6 +128,22 @@ client.once('ready', async () => {
     playerCount.sync();
 });
 
+client.on('guildMemberUpdate', function(oldMember, newMember) {
+    if (
+        !oldMember.roles.has('329039170607513601') &&
+        newMember.roles.has('329039170607513601')
+    ) {
+        console.log('User has received role!');
+    }
+
+    if (
+        oldMember.roles.has('329039170607513601') &&
+        !newMember.roles.has('329039170607513601')
+    ) {
+        console.log('Role got removed!');
+    }
+});
+
 client.on('message', message => {
     if (message.content.startsWith('!startPlayerCount')) {
         message.channel.send('Successfully started the Player Count updater!');
