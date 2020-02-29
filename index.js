@@ -129,18 +129,24 @@ client.once('ready', async () => {
 });
 
 client.on('guildMemberUpdate', function(oldMember, newMember) {
+    // User received role
     if (
         !oldMember.roles.has('329039170607513601') &&
         newMember.roles.has('329039170607513601')
     ) {
-        console.log('User has received role!');
+        newMember.guild.channels
+            .find(c => c.id === '463295082263609344')
+            .send(
+                `Thanks for boosting our server <@${newMember.id}>! Type ${prefix} verify <username> to request your exclusive nitro skin.`,
+            );
     }
 
+    // Role got removed
     if (
         oldMember.roles.has('329039170607513601') &&
         !newMember.roles.has('329039170607513601')
     ) {
-        console.log('Role got removed!');
+        // sendReminder(remove)
     }
 });
 
