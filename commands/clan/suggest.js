@@ -46,7 +46,7 @@ module.exports = {
                         filter,
                         {
                             maxMatches: 1,
-                            time: 60000,
+                            time: 120000,
                             errors: ['time'],
                         },
                     );
@@ -72,12 +72,12 @@ module.exports = {
                         userAvatar,
                     );
                 await message.author.send(
-                    `Success! We'll send this in <#632521772071256074> where people can vote on your suggestion.`,
+                    `Success! We'll send this in <#681185610181902385> where people can vote on your suggestion.`,
                 );
                 await message.author.send(suggestionEmbed);
 
                 await message.guild.channels
-                    .find(c => c.id === '632521772071256074')
+                    .find(c => c.id === '681185610181902385')
                     .send(suggestionEmbed)
                     .then(embed => {
                         embed
