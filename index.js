@@ -3,6 +3,7 @@ const Discord = require('discord.js');
 const Sequelize = require('sequelize');
 const { prefix, token } = require('./config.json');
 const getPlayerCount = require('./playerCount.js');
+const removeSkinReminder = require('./removeSkinReminder.js');
 
 // create a new Discord client
 const client = new Discord.Client();
@@ -129,6 +130,8 @@ client.once('ready', async () => {
 });
 
 client.on('guildMemberUpdate', function(oldMember, newMember) {
+    // TODO: Add username to db and remove it if he stopped boosting
+
     // User received role
     if (
         !oldMember.roles.has('329039170607513601') &&
@@ -146,7 +149,7 @@ client.on('guildMemberUpdate', function(oldMember, newMember) {
         oldMember.roles.has('329039170607513601') &&
         !newMember.roles.has('329039170607513601')
     ) {
-        // sendReminder(remove)
+        removeSkinReminder.sendRemoveReminder(newMember);
     }
 });
 
