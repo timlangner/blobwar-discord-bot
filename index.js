@@ -3,7 +3,7 @@ const Discord = require('discord.js');
 const Sequelize = require('sequelize');
 const { prefix, token } = require('./config.json');
 const getPlayerCount = require('./playerCount.js');
-const removeSkinReminder = require('./removeSkinReminder.js');
+// const removeSkinReminder = require('./removeSkinReminder.js');
 
 // create a new Discord client
 const client = new Discord.Client();
@@ -121,7 +121,7 @@ client.once('ready', async () => {
     console.log('Ready!');
 
     // set playing status
-    await client.user.setActivity('Fanix.io');
+    await client.user.setActivity('BlobWar.io');
 
     // sync the tables
     clan.sync();
@@ -149,7 +149,7 @@ client.on('guildMemberUpdate', function(oldMember, newMember) {
         oldMember.roles.has('329039170607513601') &&
         !newMember.roles.has('329039170607513601')
     ) {
-        removeSkinReminder.sendRemoveReminder(newMember);
+        // removeSkinReminder.sendRemoveReminder(newMember);
     }
 });
 

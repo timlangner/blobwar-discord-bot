@@ -10,16 +10,6 @@ const getCurrentPlayers = async (message, playerCount) => {
         'http://eu.fanix.io:5552/',
         'http://eu.fanix.io:5651/',
         'http://eu.fanix.io:5652/',
-        'http://eu.fanix.io:5451/',
-        'http://eu.fanix.io:5452/',
-        'http://eu.fanix.io:5251/',
-        'http://na.fanix.io:5751/',
-        'http://na.fanix.io:5551/',
-        'http://na.fanix.io:5552/',
-        'http://na.fanix.io:5651/',
-        'http://na.fanix.io:5652/',
-        'http://na.fanix.io:5451/',
-        'http://na.fanix.io:5452/',
     ];
 
     let playerPeakData = await playerCount.findOne({
@@ -58,7 +48,7 @@ const getCurrentPlayers = async (message, playerCount) => {
     }
 
     await message.guild.channels
-        .find(channel => channel.id === '678671710006018089')
+        .find((channel) => channel.id === '678671710006018089')
         .setName(`Playing: ${currentPlayers} | Peak: ${playerPeak.playerPeak}`);
 
     console.log('PlayerCount updated');
