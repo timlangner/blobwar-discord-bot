@@ -1,2 +1,2 @@
-Fanix Discord Bot
-# Discord Bot for Fanix.io
+Blobwar Discord Bot
+# Discord Bot for BlobWar.io
