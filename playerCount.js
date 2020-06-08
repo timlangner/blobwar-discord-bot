@@ -9,7 +9,7 @@ const getCurrentPlayers = async (message, playerCount) => {
     let currentPlayers = 0;
 
     try {
-        fetch('https://api.blobwar.io/v1/servers')
+        await fetch('https://api.blobwar.io/v1/servers')
             .then((response) => response.json())
             .then((data) => {
                 const gamemodes = Object.values(data);
@@ -18,12 +18,11 @@ const getCurrentPlayers = async (message, playerCount) => {
                         currentPlayers += gamemodes[i][j].players.current;
                     }
                 }
-                console.log(currentPlayers);
             });
     } catch (e) {
         console.log('Could not fetch\n' + e);
     }
-
+    
     if (currentPlayers > playerPeak.playerPeak) {
         await playerCount.update(
             {
@@ -44,7 +43,7 @@ const getCurrentPlayers = async (message, playerCount) => {
     }
 
     await message.guild.channels
-        .find((channel) => channel.id === '678671710006018089')
+        .find((channel) => channel.id === '564379502424227851')
         .setName(`Playing: ${currentPlayers} | Peak: ${playerPeak.playerPeak}`);
 
     console.log('PlayerCount updated');

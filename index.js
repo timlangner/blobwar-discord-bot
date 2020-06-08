@@ -53,17 +53,19 @@ client.once('ready', async () => {
     console.log('Ready!');
 
     // set playing status
-    await client.user.setActivity('Fanix.io');
+    await client.user.setActivity('BlobWar.io');
 
     // sync the tables
     playerCount.sync();
 });
 
 client.on('message', message => {
-    message.channel.send('Successfully started the Player Count updater!');
-    setInterval(() => {
-        getPlayerCount.getCurrentPlayers(message, playerCount);
-    }, 30000);
+    if (message.content.startsWith('!startPlayerCount')) {
+        message.channel.send('Successfully started the Player Count updater!');
+        setInterval(() => {
+            getPlayerCount.getCurrentPlayers(message, playerCount);
+        }, 3000);
+    }
 
     if (!message.content.startsWith(prefix) || message.author.bot) return;
 
