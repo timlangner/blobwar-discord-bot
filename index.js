@@ -64,7 +64,7 @@ client.on('message', message => {
         message.channel.send('Successfully started the Player Count updater!');
         setInterval(() => {
             getPlayerCount.getCurrentPlayers(message, playerCount);
-        }, 3000);
+        }, 30000);
     }
 
     if (!message.content.startsWith(prefix) || message.author.bot) return;
@@ -78,7 +78,7 @@ client.on('message', message => {
         );
     } else {
         try {
-            client.commands.get(command).execute(message, args, clan, member);
+            client.commands.get(command).execute(message, args, member);
         } catch (error) {
             console.error(error);
             message.reply('there was an error trying to execute that command!');
