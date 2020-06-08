@@ -28,7 +28,7 @@ module.exports = {
             try {
                 let msg = await message.author.dmChannel.awaitMessages(filter, {
                     maxMatches: 1,
-                    time: 30000,
+                    time: 60000,
                     errors: ['time'],
                 });
                 title = msg.first().content;
@@ -46,7 +46,7 @@ module.exports = {
                         filter,
                         {
                             maxMatches: 1,
-                            time: 120000,
+                            time: 180000,
                             errors: ['time'],
                         },
                     );
