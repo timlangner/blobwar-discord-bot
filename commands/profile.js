@@ -14,7 +14,7 @@ module.exports = {
     name: 'profile',
     description: 'Shows the fanix profile of the user',
     guildOnly: true,
-    async execute(message, args, clan, member) {
+    async execute(message, args) {
         if (!args.length) {
             return message.channel.send(
                 `You didn't provide a username, ${message.author}!`,

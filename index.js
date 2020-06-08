@@ -36,11 +36,11 @@ const playerCount = sequelize.define('playerCount', {
 
 // Find all commands
 const commandFiles = fs
-    .readdirSync('./commands/clan')
+    .readdirSync('./commands/')
     .filter(file => file.endsWith('.js'));
 
 for (const file of commandFiles) {
-    const command = require(`./commands/clan/${file}`);
+    const command = require(`./commands/${file}`);
 
     // set a new item in the Collection
     // with the key as the command name and the value as the exported module
@@ -78,7 +78,7 @@ client.on('message', message => {
         );
     } else {
         try {
-            client.commands.get(command).execute(message, args, member);
+            client.commands.get(command).execute(message, args);
         } catch (error) {
             console.error(error);
             message.reply('there was an error trying to execute that command!');
