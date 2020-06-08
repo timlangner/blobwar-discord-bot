@@ -17,73 +17,6 @@ const sequelize = new Sequelize('database', 'user', 'password', {
     storage: 'database.sqlite',
 });
 
-// Create "Clan" table
-const clan = sequelize.define('clan', {
-    clanId: {
-        primaryKey: true,
-        autoIncrement: true,
-        type: Sequelize.INTEGER,
-        unique: true,
-        allowNull: false,
-    },
-    name: {
-        type: Sequelize.STRING,
-        unique: true,
-        defaultValue: '',
-        allowNull: false,
-    },
-    ownerUserId: {
-        type: Sequelize.STRING,
-        unique: true,
-        defaultValue: 0,
-        allowNull: false,
-    },
-    roleId: {
-        type: Sequelize.STRING,
-        unique: true,
-        defaultValue: 0,
-        allowNull: false,
-    },
-    memberCount: {
-        type: Sequelize.INTEGER,
-        defaultValue: 0,
-        allowNull: false,
-    },
-    prefix: {
-        type: Sequelize.STRING,
-        allowNull: true,
-    },
-});
-
-// Create "Member" table
-const member = sequelize.define('member', {
-    memberId: {
-        primaryKey: true,
-        autoIncrement: true,
-        type: Sequelize.INTEGER,
-        unique: true,
-        allowNull: false,
-    },
-    username: {
-        type: Sequelize.STRING,
-        unique: true,
-        defaultValue: '',
-        allowNull: false,
-    },
-    memberUserId: {
-        type: Sequelize.STRING,
-        unique: true,
-        defaultValue: 0,
-        allowNull: false,
-    },
-    clanName: {
-        type: Sequelize.STRING,
-        unique: false,
-        allowNull: true,
-        foreignKey: clan.name,
-    },
-});
-
 // Create "PlayerCount" table
 const playerCount = sequelize.define('playerCount', {
     id: {
@@ -123,18 +56,14 @@ client.once('ready', async () => {
     await client.user.setActivity('Fanix.io');
 
     // sync the tables
-    clan.sync();
-    member.sync();
     playerCount.sync();
 });
 
 client.on('message', message => {
-    if (message.content.startsWith('!startPlayerCount')) {
-        message.channel.send('Successfully started the Player Count updater!');
-        setInterval(() => {
-            getPlayerCount.getCurrentPlayers(message, playerCount);
-        }, 30000);
-    }
+    message.channel.send('Successfully started the Player Count updater!');
+    setInterval(() => {
+        getPlayerCount.getCurrentPlayers(message, playerCount);
+    }, 30000);
 
     if (!message.content.startsWith(prefix) || message.author.bot) return;
 

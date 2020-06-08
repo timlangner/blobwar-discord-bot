@@ -1,16 +1,6 @@
 const fetch = require('node-fetch');
 
 const getCurrentPlayers = async (message, playerCount) => {
-    const ips = [
-        'http://eu.fanix.io:5751/',
-        'http://eu.fanix.io:5752/',
-        'http://eu.fanix.io:5951/',
-        'http://eu.fanix.io:5952/',
-        'http://eu.fanix.io:5551/',
-        'http://eu.fanix.io:5552/',
-        'http://eu.fanix.io:5651/',
-        'http://eu.fanix.io:5652/',
-    ];
 
     let playerPeakData = await playerCount.findOne({
         where: { id: 1 },
@@ -18,15 +8,20 @@ const getCurrentPlayers = async (message, playerCount) => {
     let playerPeak = JSON.parse(JSON.stringify(playerPeakData));
     let currentPlayers = 0;
 
-    for (let i = 0; i < ips.length; i++) {
-        try {
-            const response = await fetch(ips[i]);
-            const stats = await response.json();
-            currentPlayers += stats.current_players;
-            console.log(currentPlayers);
-        } catch (e) {
-            console.log('Could not fetch\n' + e);
-        }
+    try {
+        fetch('https://api.blobwar.io/v1/servers')
+            .then((response) => response.json())
+            .then((data) => {
+                const gamemodes = Object.values(data);
+                for (let i = 0; i < gamemodes.length; i++) {
+                    for (let j = 0; j < gamemodes[i].length; j++) {
+                        currentPlayers += gamemodes[i][j].players.current;
+                    }
+                }
+                console.log(currentPlayers);
+            });
+    } catch (e) {
+        console.log('Could not fetch\n' + e);
     }
 
     if (currentPlayers > playerPeak.playerPeak) {
